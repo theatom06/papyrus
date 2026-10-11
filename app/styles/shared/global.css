@@ -1,0 +1,323 @@
+:root {
+  --sand: #f5f1eb;
+  --linen: #fdfbf7;
+  --border: #e7e0d8;
+  --ink: #29231e;
+  --slate: #746b63;
+  --amber: #c97732;
+  --amber-dark: #a85d20;
+  --serif: "Libre Baskerville", Georgia, serif;
+  --sans: "DM Sans", sans-serif;
+  --mono: "DM Mono", monospace;
+
+  font-family: var(--sans);
+  color: var(--ink);
+  background: var(--sand);
+
+  --physics-light: #efd19b;
+  --physics-dark: #986021;
+  --mathematics-light: #c9dae4;
+  --mathematics-dark: #3f7893;
+  --chemistry-light: #cadacb;
+  --chemistry-dark: #4e8057;
+  --english-literature-light: #d8d2e8;
+  --english-literature-dark: #a85d69;
+
+  --physics: var(--physics-light);
+  --mathematics: var(--mathematics-light);
+  --chemistry: var(--chemistry-light);
+  --english-literature: var(--english-literature-light);
+  --subject-ink: #29231e;
+  --subject-accent: var(--amber-dark);
+  --on-accent: #fffaf2;
+  --paper-line: #5f554c35;
+  --card-shadow: #3527190b;
+  --card-shadow-hover: #35271918;
+  --pin-surface: #f5dfcd;
+  --menu-shadow: #35271920;
+
+  --paper-amber: #efd19b;
+  --paper-blue: #c9dae4;
+  --paper-sage: #cadacb;
+  --paper-rose: #e9c7c3;
+  --paper-lavender: #d8d2e8;
+  --paper-peach: #efd2b7;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--sand);
+  color: var(--ink);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+.dark {
+  --sand: #0e1418;
+  --linen: #182229;
+  --border: #40515b;
+  --ink: #fffaf2;
+  --slate: #c0cbd0;
+  --amber: #ffc06a;
+  --amber-dark: #ffd18d;
+  --physics: var(--physics-dark);
+  --mathematics: var(--mathematics-dark);
+  --chemistry: var(--chemistry-dark);
+  --english-literature: var(--english-literature-dark);
+  --subject-ink: #fffaf2;
+  --on-accent: #081016;
+  --paper-line: #10182035;
+  --card-shadow: #0008;
+  --card-shadow-hover: #000b;
+  --pin-surface: #4a3021;
+  --menu-shadow: #0008;
+  color-scheme: dark;
+  & .site-header {
+    background: color-mix(in srgb, #0e1418 94%, transparent);
+  }
+
+  & .resource-card,
+  & .search-box,
+  & .settings-card {
+    box-shadow: 0 8px 24px #0008;
+  }
+
+  & .resource-info {
+    background: #182229;
+  }
+
+  & .subject-physics {
+    --subject-color: var(--physics-dark);
+    --subject-accent: var(--physics-light);
+  }
+
+  & .subject-mathematics {
+    --subject-color: var(--mathematics-dark);
+    --subject-accent: var(--mathematics-light);
+  }
+
+  & .subject-chemistry {
+    --subject-color: var(--chemistry-dark);
+    --subject-accent: var(--chemistry-light);
+  }
+
+  & .subject-english-literature {
+    --subject-color: var(--english-literature-dark);
+    --subject-accent: var(--english-literature-light);
+  }
+}
+
+.site-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 27px 43px;
+  border-bottom: 1px solid var(--border);
+  background: color-mix(in srgb, var(--sand) 92%, transparent);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  backdrop-filter: blur(14px);
+  & nav {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    color: var(--slate);
+    font-size: 11px;
+    font-weight: 600;
+
+    & a {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition:
+        color 0.2s,
+        transform 0.2s;
+
+      &:first-letter {
+        font-size: 15px;
+      }
+
+      &:hover,
+      &.active {
+        color: var(--amber);
+        transform: translateY(-1px);
+      }
+    }
+  }
+}
+
+.brand {
+  display: flex;
+  gap: 11px;
+  align-items: center;
+  &-mark {
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 6px;
+    background: var(--ink);
+    color: var(--sand);
+    font: bold 15px var(--serif);
+  }
+
+  & strong {
+    font: 700 17px var(--serif);
+  }
+
+  & small {
+    display: block;
+    color: var(--slate);
+    font: 8px var(--mono);
+    margin-top: 2px;
+  }
+}
+
+.brand-mark {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+  background: var(--ink);
+  color: var(--sand);
+  font: bold 15px var(--serif);
+}
+
+.subject-chip {
+  display: inline-flex;
+  align-items: center;
+  width: max-content;
+  padding: 4px 8px;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  background: color-mix(
+    in srgb,
+    var(--subject-accent, var(--amber-dark)) 12%,
+    var(--linen)
+  );
+  color: var(--subject-accent, var(--amber-dark));
+  font: 9px var(--mono);
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  line-height: 1.1;
+}
+
+.subject-badge {
+  position: absolute;
+  top: 13px;
+  left: 14px;
+  padding: 5px 8px;
+  border-color: currentColor;
+  background: #ffffff66;
+}
+
+.subject-physics {
+  --subject-color: var(--physics-light);
+  --subject-accent: var(--physics-dark);
+}
+
+.subject-mathematics {
+  --subject-color: var(--mathematics-light);
+  --subject-accent: var(--mathematics-dark);
+}
+
+.subject-chemistry {
+  --subject-color: var(--chemistry-light);
+  --subject-accent: var(--chemistry-dark);
+}
+
+.subject-english-literature {
+  --subject-color: var(--english-literature-light);
+  --subject-accent: var(--english-literature-dark);
+}
+
+.resource-card {
+  background: color-mix(
+    in srgb,
+    var(--subject-color, var(--linen)) 14%,
+    var(--linen)
+  );
+  border-color: color-mix(
+    in srgb,
+    var(--subject-color, var(--border)) 35%,
+    var(--border)
+  );
+  box-shadow: 0 5px 14px var(--card-shadow);
+
+  &:hover {
+    box-shadow: 0 14px 28px var(--card-shadow-hover);
+  }
+}
+
+.paper-thumb {
+  background: var(--subject-color, var(--amber));
+  color: var(--subject-ink);
+  & strong,
+  & small {
+    color: inherit;
+  }
+}
+
+.pin-count {
+  color: var(--amber);
+  font: 9px var(--mono);
+}
+
+.theme-button,
+.modal-close {
+  border: 1px solid var(--border);
+  background: var(--linen);
+  color: var(--slate);
+  border-radius: 8px;
+  padding: 8px 11px;
+  cursor: pointer;
+}
+
+.page-heading,
+.explorer,
+.pins-page,
+.settings,
+.upload,
+.detail {
+  max-width: 1120px;
+  margin: 55px auto 85px;
+  padding: 0 25px;
+}
+
+.page-heading h1,
+.pins-page h1,
+.settings h1,
+.upload h1 {
+  font: 700 clamp(43px, 6vw, 68px)/1.03 var(--serif);
+  letter-spacing: -0.07em;
+  margin: 18px 0;
+  & h1 {
+    font: 700 clamp(43px, 6vw, 68px)/1.03 var(--serif);
+    letter-spacing: -0.07em;
+    margin: 18px 0;
+  }
+}
+
+.page-heading > p:last-child,
+.lead {
+  max-width: 450px;
+}
+
+.explorer {
+  margin-top: 0;
+}

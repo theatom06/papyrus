@@ -1,29 +1,34 @@
-Papyrus — Exam practice made less stressful
+# Papyrus
 
-Overview
+Papyrus exam prep archive built by students for students.
 
-A small Next.js app (app-router) that helps students find past exam papers, mocks, and mark schemes.
+## Architecture
+The project is made in Next.js and thus combines both frontend and backend in a single codebase. 
 
-Quick start
+The frontend is built using React components, while the backend handles API requests and data management. The main database is made using SQLite, and the schema is defined in `lib/schema.ts`.
 
-```bash
-pnpm install
-pnpm dev
-```
+## Vision/Motivation
 
-What I changed
+As a student that has gone through the board exam phase, I found that one of the most influential factors in my prepartion was the practise of various papers. However, I also found that the availability of these papers was limited and often scattered across various sources. Me and my freinds would scour different websites and resources to find the papers we needed. 
 
-- Updated project name and description in `package.json`.
-- Made the paper descriptions more conversational in `components/papyrus-data.ts`.
-- Improved header semantics and accessibility in `components/site-header.tsx`.
+This project aims to removee that friction for future students by centralizing and provide easy access to a wide range of exam papers, making it easier for students to prepare effectively.
 
-Notes & suggestions
+## Contributing
 
-- The paper data is currently in `components/papyrus-data.ts`. Consider moving it to a `data/` folder or a simple JSON/MD source if you plan to scale or fetch remotely.
-- `next.config.mjs` sets `typescript.ignoreBuildErrors: true` which suppresses type errors during build — review this if you want stricter CI checks.
-- Consider adding a small accessibility CSS helper (e.g. `.sr-only`) if you add skip links.
+### 1. Contributing Code
 
-If you want, I can:
+The project is open-source, and contributions are welcome. AI generated slop is not allowed, we dont forbid AI generated code, but we do require that all code is reviewed and approved by a human before being merged with proper human written documentation and explanations.
 
-- Convert the in-memory data to a JSON API and add a simple server route.
-- Run the project locally and open the dev server to verify the UI.
+### 2. Contributing papers/materials 
+
+The website has a page to upload papers and materials. All papers are gone through a human review process before being added to the archive. If you have any papers or materials that you would like to contribute, please use the upload page to submit them for review. 
+
+Just make sure to:
+1. Only submit papers that you have the right to share. Do not submit copyrighted materials without permission.
+2. Provide accurate information about the paper, including the subject, year, and any other relevant details.
+3. Ensure that the paper is in a readable format (preferably soft copy in PDF format) and is not password-protected or corrupted.
+4. Be patient. The review process may take some time, but we will notify you once your submission has been reviewed and approved for inclusion in the archive.
+
+## Features
+- A archive page which allows peopple to go through all the papers,
+- a pin page to collect all your favorite papers 
