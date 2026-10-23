@@ -1,28 +1,28 @@
 import { NextResponse } from "next/server";
-import { getDb } from "@/lib/db";
+import log from "@/lib/admin-logger";
+import serverLog from "@/lib/server-logger";
+import {
+  getPaper,
+  isPaperStatus,
+  softDeletePaper,
+  updatePaper,
+} from "@/db/db-service";
+import { requireAdmin } from "@/lib/admin-auth";
 
 export async function GET(
-  _request: Request,
+  request: Request,
   context: { params: Promise<{ id: string }> },
 ) {
-  const db = await getDb();
   const { id } = await context.params;
-  const paper = db
-    .query(
-      `SELECT p.id, p.title, p.description, p.exam_year AS year,
-        p.duration, p.file_path, p.file_size_bytes, p.downloads_count AS downloads,
-        p.is_verified, p.created_at, b.code AS board, s.name AS subject,
-        rt.name AS type
-       FROM papers p
-       JOIN boards b ON b.id = p.board_id
-       JOIN subjects s ON s.id = p.subject_id
-       JOIN resource_types rt ON rt.id = p.resource_type_id
-       WHERE p.id = ?`,
-    )
-    .get(id);
-  if (!paper) {
-    return NextResponse.json({ error: "Paper not found." }, { status: 404 });
+  await serverLog("paper.requested", { paperId: id });
+  const admin = new URL(request.url).searchParams.get("scope") === "admin";
+  if (admin) {
+    const denied = await requireAdmin(request);
+    if (denied) return denied;
   }
+  const paper = await getPaper(id, admin);
+  if (!paper)
+    return NextResponse.json({ error: "Paper not found." }, { status: 404 });
   return NextResponse.json({ paper });
 }
 
@@ -30,55 +30,91 @@ export async function PATCH(
   request: Request,
   context: { params: Promise<{ id: string }> },
 ) {
-  const db = await getDb();
+  const denied = await requireAdmin(request);
+  if (denied) return denied;
   const { id } = await context.params;
-  let body: {
-    isVerified?: boolean;
-    title?: string;
-  };
+  let body: Record<string, unknown>;
   try {
-    body = (await request.json()) as typeof body;
+    body = (await request.json()) as Record<string, unknown>;
   } catch {
     return NextResponse.json(
       { error: "Request body must be valid JSON." },
       { status: 400 },
     );
   }
-  const fields: string[] = [];
-  const values: (string | number)[] = [];
-  if (typeof body.isVerified === "boolean") {
-    fields.push("is_verified = ?");
-    values.push(body.isVerified ? 1 : 0);
+  const updates: Record<string, string | number> = {};
+  if (typeof body.title === "string" && body.title.trim())
+    updates.title = body.title.trim();
+  if (typeof body.description === "string")
+    updates.description = body.description.trim();
+  if (Number.isInteger(body.duration) && Number(body.duration) > 0)
+    updates.duration = Number(body.duration);
+  if (Number.isInteger(body.examYear) && Number(body.examYear) >= 1900)
+    updates.exam_year = Number(body.examYear);
+  if (
+    body.downloads !== undefined &&
+    Number.isInteger(Number(body.downloads)) &&
+    Number(body.downloads) >= 0
+  ) {
+    updates.downloads_count = Number(body.downloads);
   }
-  if (body.title?.trim()) {
-    fields.push("title = ?");
-    values.push(body.title.trim());
+  for (const [input, column] of [
+    ["boardId", "board_id"],
+    ["classLevelId", "class_level_id"],
+    ["subjectId", "subject_id"],
+    ["resourceTypeId", "resource_type_id"],
+  ] as const) {
+    if (body[input] !== undefined) {
+      if (!Number.isInteger(body[input]) || Number(body[input]) <= 0) {
+        return NextResponse.json(
+          { error: "Paper metadata is invalid." },
+          { status: 400 },
+        );
+      }
+      updates[column] = Number(body[input]);
+    }
   }
-  if (!fields.length) {
+  if (body.status !== undefined) {
+    if (!isPaperStatus(body.status))
+      return NextResponse.json(
+        { error: "Invalid paper status." },
+        { status: 400 },
+      );
+    updates.status = body.status;
+  }
+  if (!Object.keys(updates).length)
     return NextResponse.json(
       { error: "No changes supplied." },
       { status: 400 },
     );
+  try {
+    const changed = await updatePaper(id, updates);
+    if (!changed)
+      return NextResponse.json({ error: "Paper not found." }, { status: 404 });
+    await log("paper.updated", {
+      paperId: id,
+      status: updates.status || null,
+    });
+    return NextResponse.json({ ok: true });
+  } catch (error) {
+    console.error("Failed to update paper", error);
+    return NextResponse.json(
+      { error: "Paper could not be updated." },
+      { status: 400 },
+    );
   }
-  values.push(id);
-  const result = db
-    .prepare(`UPDATE papers SET ${fields.join(", ")} WHERE id = ?`)
-    .run(...values);
-  if (!result.changes) {
-    return NextResponse.json({ error: "Paper not found." }, { status: 404 });
-  }
-  return NextResponse.json({ ok: true });
 }
 
 export async function DELETE(
   _request: Request,
   context: { params: Promise<{ id: string }> },
 ) {
-  const db = await getDb();
+  const denied = await requireAdmin(_request);
+  if (denied) return denied;
   const { id } = await context.params;
-  const result = db.prepare("DELETE FROM papers WHERE id = ?").run(id);
-  if (!result.changes) {
+  const changed = await softDeletePaper(id);
+  if (!changed)
     return NextResponse.json({ error: "Paper not found." }, { status: 404 });
-  }
+  await log("paper.soft_deleted", { paperId: id });
   return NextResponse.json({ ok: true });
 }

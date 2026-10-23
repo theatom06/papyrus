@@ -1,11 +1,17 @@
 "use client";
 
+import "./style.css";
+
 import { FormEvent, useState } from "react";
 import { LockKeyhole, LogIn } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { PageTitle } from "@/components/page-title";
+import { apiRequest } from "@/lib/api-client";
+import { useToast } from "@/components/toast";
 
 export default function LoginPage() {
   const router = useRouter();
+  const { showToast } = useToast();
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -14,13 +20,17 @@ export default function LoginPage() {
     event.preventDefault();
     setLoading(true);
     setError("");
-    const response = await fetch("/api/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ password }),
-    });
-    if (!response.ok) {
-      setError("That password is not correct.");
+    try {
+      await apiRequest("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password }),
+      });
+      showToast("Signed into Admin Studio successfully", "success");
+    } catch (reason) {
+      const msg = reason instanceof Error ? reason.message : "Login failed.";
+      setError(msg);
+      showToast(msg, "error");
       setLoading(false);
       return;
     }
@@ -30,9 +40,10 @@ export default function LoginPage() {
 
   return (
     <main className="login-page">
+      <PageTitle title="Admin login" />
       <div className="login-card">
         <a className="login-brand" href="/">
-          <span className="brand-mark">P</span>
+          <img src="/logo.svg" alt="Papyrus logo" className="brand-logo" />
           <span>
             <strong>papyrus</strong>
             <small>ADMIN STUDIO</small>
@@ -65,8 +76,7 @@ export default function LoginPage() {
           </button>
         </form>
         <p className="login-note">
-          Development password: <code>papyrus-admin</code>. Set{" "}
-          <code>ADMIN_PASSWORD</code> before deployment.
+          The administrator password is verified securely on the server.
         </p>
       </div>
     </main>

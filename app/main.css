@@ -1,0 +1,8 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap");
+
+@import "./styles/global.css";
+@import "./styles/components.css";
+@import "./styles/overlays.css";
+@import "./styles/motion.css";
+@import "./styles/responsive.css";
+@import "./styles/breakpoints.css";

@@ -1,0 +1,72 @@
+.principles article,
+.settings-card {
+  padding: 24px;
+  background: var(--linen);
+  border: 1px solid var(--border);
+  border-radius: 15px;
+  box-shadow: 0 18px 48px #35271910;
+  transition:
+    border-color 180ms ease,
+    background 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.settings-card {
+  max-width: 670px;
+  margin-top: 25px;
+
+  & h2 {
+    font: 600 23px var(--serif);
+    margin: 0 0 20px;
+  }
+}
+
+.setting {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  padding: 18px 0;
+  border-top: 1px solid var(--border);
+  font-size: 11px;
+
+  & p {
+    margin: 5px 0 0;
+    color: var(--slate);
+    font-size: 10px;
+  }
+}
+
+.mode-buttons {
+  display: flex;
+  gap: 6px;
+  padding: 4px;
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  background: var(--sand);
+}
+
+.mode-buttons button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 12px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  color: var(--slate);
+  background: transparent;
+  font-size: 11px;
+  transition: 160ms ease;
+
+  &.active {
+    border-color: var(--border);
+    background: var(--linen);
+    color: var(--ink);
+    box-shadow: 0 3px 10px #35271914;
+  }
+
+  &:hover {
+    border-color: var(--amber);
+    color: var(--amber);
+  }
+}

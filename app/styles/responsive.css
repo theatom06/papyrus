@@ -1,0 +1,355 @@
+@media (max-width: 760px) {
+  .site-header {
+    padding: 14px 16px;
+    gap: 12px;
+    align-items: flex-start;
+    & nav {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 30;
+      display: grid !important;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0;
+      padding: 8px 4px calc(8px + env(safe-area-inset-bottom));
+      border: 0;
+      border-top: 1px solid var(--border);
+      border-radius: 0;
+      background: color-mix(in srgb, var(--linen) 97%, transparent);
+      box-shadow: 0 -4px 16px #0001;
+      backdrop-filter: blur(16px);
+
+      & a {
+        display: flex !important;
+        justify-content: center;
+        flex-direction: column;
+        gap: 2px;
+        font-size: 9px;
+
+        &:first-letter {
+          font-size: 14px;
+        }
+      }
+
+      & .pin-count {
+        position: absolute;
+        margin: -22px 0 0 20px;
+      }
+    }
+  }
+
+  .brand {
+    min-width: 0;
+
+    & strong {
+      font-size: 15px;
+    }
+
+    & small {
+      font-size: 7px;
+      white-space: nowrap;
+    }
+  }
+
+  body {
+    padding-bottom: 76px;
+  }
+
+  .theme-button {
+    width: 34px;
+    height: 34px;
+    flex: none;
+  }
+
+  .hero,
+  .page-heading,
+  .settings,
+  .upload,
+  .detail,
+  .pins-page {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+  .hero {
+    padding-top: 70px;
+    padding-bottom: 60px;
+    min-height: auto;
+  }
+
+  .hero h1,
+  .page-heading h1,
+  .settings h1,
+  .upload h1,
+  .pins-page h1 {
+    font-size: clamp(38px, 12vw, 62px);
+    line-height: 1.02;
+  }
+
+  .hero-copy,
+  .page-heading > p:not(.kicker),
+  .lead {
+    max-width: 100%;
+    font-size: 14px;
+  }
+
+  .hero-actions {
+    flex-direction: column;
+    align-items: stretch;
+    & .button {
+      justify-content: center;
+    }
+  }
+
+  .hero-stamp {
+    position: static;
+    margin: 36px 0 0 auto;
+    width: 150px;
+  }
+
+  .intro {
+    grid-template-columns: 1fr;
+    gap: 18px;
+    padding: 48px 18px;
+  }
+
+  .intro h2 {
+    font-size: 36px;
+  }
+
+  .principles {
+    grid-template-columns: 1fr;
+    padding: 0 18px 50px;
+  }
+
+  .principles article {
+    border-right: 0;
+    border-bottom: 1px solid var(--border);
+    padding: 24px 0;
+  }
+
+  .quote {
+    margin: 0 18px 50px;
+    padding: 28px 0;
+  }
+
+  .quote blockquote {
+    font-size: 20px;
+  }
+
+  .page-heading {
+    padding-top: 52px;
+  }
+
+  .explorer {
+    padding: 0 18px;
+  }
+
+  .search-box {
+    padding: 12px 13px;
+    gap: 8px;
+    border-radius: 12px;
+    & input {
+      font-size: 14px;
+      min-width: 0;
+
+      &::placeholder {
+        font-size: 12px;
+      }
+    }
+  }
+
+  .search-box-large {
+    min-height: 58px;
+    flex-wrap: wrap;
+  }
+
+  .search-box-large input {
+    flex: 1 1 120px;
+  }
+
+  .search-submit {
+    padding: 10px;
+  }
+
+  .search-submit svg {
+    margin: 0;
+  }
+
+  .filter-panel {
+    margin-left: 18px;
+    margin-right: 18px;
+  }
+
+  .active-filter-pills {
+    margin-left: 5px;
+  }
+
+  .filter-menu {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .search-help {
+    font-size: 9px;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .catalog-line {
+    margin: 26px 18px 14px;
+    font-size: 9px;
+    & span:last-child {
+      display: none;
+    }
+  }
+
+  .resource-grid {
+    grid-template-columns: 1fr;
+    padding: 0 10px;
+    gap: 12px;
+  }
+
+  .resource-card {
+    animation: none;
+    border-radius: 12px;
+  }
+
+  .paper-thumb {
+    min-height: 158px;
+  }
+
+  .resource-info {
+    padding: 13px;
+
+    & h3 {
+      font-size: 18px;
+    }
+  }
+
+  .resource-footer {
+    align-items: flex-end;
+  }
+
+  .pin-control {
+    max-width: 132px;
+  }
+
+  .pin-main {
+    padding: 9px 8px;
+    font-size: 10px;
+  }
+
+  .pin-menu-trigger {
+    padding: 9px 7px;
+  }
+
+  .groups {
+    display: flex;
+    overflow-x: auto;
+    gap: 8px;
+    padding-bottom: 5px;
+  }
+
+  .group-tab {
+    min-width: 145px;
+  }
+
+  .detail-layout {
+    grid-template-columns: 1fr;
+    padding: 0 18px;
+    gap: 24px;
+  }
+
+  .breadcrumb {
+    margin: 28px 18px 0;
+  }
+
+  .document {
+    padding: 14px;
+  }
+
+  .doc-page {
+    padding: 28px 20px;
+    min-height: 520px;
+  }
+
+  .sidebar {
+    position: static;
+  }
+
+  .settings-card {
+    margin-left: 18px;
+    margin-right: 18px;
+    padding: 18px;
+  }
+
+  .setting {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .mode-buttons {
+    width: 100%;
+  }
+
+  .mode-buttons button {
+    flex: 1;
+  }
+
+  .upload form {
+    margin-top: 28px;
+  }
+
+  .modal {
+    width: calc(100% - 32px);
+    padding: 24px;
+  }
+
+  .modal-actions {
+    flex-direction: column-reverse;
+    & .button {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+
+  footer {
+    padding: 30px 18px 95px;
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 380px) {
+  .brand small {
+    display: none;
+  }
+
+  .site-header {
+    & nav a span {
+      font-size: 8px;
+    }
+  }
+
+  .resource-meta {
+    font-size: 8px;
+  }
+
+  .resource-type {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .resource-card,
+  .brand-logo {
+    animation: none !important;
+  }
+
+  .resource-card:hover {
+    transform: none;
+  }
+}

@@ -1,0 +1,159 @@
+.hero {
+  padding: 108px 25px 90px;
+  text-align: center;
+  background: radial-gradient(ellipse at 50% 45%, #fffaf3 0%, transparent 60%);
+}
+.dark .hero {
+  background: radial-gradient(ellipse at 50% 45%, #26313a 0%, transparent 60%);
+}
+
+.eyebrow,
+.kicker {
+  color: var(--amber);
+  font: 10px var(--mono);
+  letter-spacing: 0.12em;
+}
+
+.hero h1 {
+  font: 700 clamp(50px, 7vw, 91px)/1.03 var(--serif);
+  letter-spacing: -0.07em;
+  margin: 27px 0;
+  & em {
+    color: var(--amber);
+    font-style: italic;
+    font-weight: 400;
+  }
+}
+
+.hero-copy,
+.lead {
+  max-width: 440px;
+  margin: 0 auto;
+  color: var(--slate);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.hero-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 30px;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 12px 17px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.button-dark {
+  background: var(--ink);
+  color: var(--sand);
+}
+
+.button-soft {
+  background: var(--linen);
+  border-color: var(--border);
+}
+
+.button-ghost {
+  background: transparent;
+  border-color: var(--border);
+}
+
+.hero-stamp {
+  display: flex;
+  justify-content: space-between;
+  max-width: 350px;
+  margin: 55px auto 0;
+  padding: 13px 16px;
+  border-block: 1px solid var(--border);
+  font: 9px var(--mono);
+  color: var(--slate);
+  & strong {
+    color: var(--amber);
+    font-size: 10px;
+  }
+}
+
+.intro,
+.principles,
+.quote {
+  max-width: 1000px;
+  margin: 0 auto 100px;
+  padding: 0 25px;
+}
+.intro {
+  display: flex;
+  justify-content: space-between;
+  gap: 50px;
+  & h2 {
+    font: 700 40px/1.1 var(--serif);
+    letter-spacing: -0.05em;
+    margin: 20px 0;
+
+    & em {
+      color: var(--amber);
+      font-style: italic;
+      font-weight: 400;
+    }
+  }
+
+  & > p {
+    max-width: 330px;
+    margin-top: 42px;
+    color: var(--slate);
+    font-size: 13px;
+    line-height: 1.75;
+  }
+}
+
+.principles {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  & article > b {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    background: var(--amber);
+    color: white;
+    border-radius: 8px;
+  }
+
+  & h3 {
+    font: 600 18px var(--serif);
+    margin: 23px 0 8px;
+  }
+
+  & p {
+    font-size: 11px;
+    line-height: 1.7;
+    color: var(--slate);
+  }
+}
+
+.quote {
+  text-align: center;
+  color: var(--amber);
+  & blockquote {
+    max-width: 650px;
+    margin: 0 auto 12px;
+    font: italic 22px/1.5 var(--serif);
+    color: var(--ink);
+  }
+
+  & small {
+    font: 9px var(--mono);
+    color: var(--slate);
+  }
+}
