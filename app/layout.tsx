@@ -6,6 +6,9 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
+      <head>
+        <link rel="icon" href="/icon.svg" type="image/svg+xml" sizes="any" />
+      </head>
       <body>
         <ToastProvider>{children}</ToastProvider>
       </body>
