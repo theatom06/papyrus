@@ -1,5 +1,5 @@
 export const MAX_UPLOAD_BYTES = 20 * 1024 * 1024; // 20 MB
-export const MAX_UPLOAD_BODY_BYTES = 25 * 1024 * 1024; // 25 MB, including multipart overhead
+export const MAX_UPLOAD_BODY_BYTES = 22 * 1024 * 1024; // 22 MB (Generous 2MB overhead)
 
 export async function isPdfFile(file: File): Promise<boolean> {
   if (

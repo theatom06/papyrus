@@ -6,7 +6,7 @@ import {
   isPaperStatus,
   softDeletePaper,
   updatePaper,
-} from "@/db/db-service";
+} from "@/db/functions/paper";
 import { requireAdmin } from "@/lib/admin-auth";
 
 export async function GET(

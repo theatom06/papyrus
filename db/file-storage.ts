@@ -29,16 +29,6 @@ export async function readPaperFile(relativePath: string): Promise<BunFile> {
     return file;
   }
 
-  const chemFile = Bun.file(path.join(paperDir, "some-chem.pdf"));
-  if (await chemFile.exists()) {
-    return chemFile;
-  }
-
-  const sampleFile = Bun.file(path.join(paperDir, "sample.pdf"));
-  if (await sampleFile.exists()) {
-    return sampleFile;
-  }
-
   return file;
 }
 

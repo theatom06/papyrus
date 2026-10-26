@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/admin-auth";
-import { createResourceType } from "@/db/db-service";
+import { createResourceType } from "@/db/functions/board";
 
 export const dynamic = "force-dynamic";
 

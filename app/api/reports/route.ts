@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { listPaperReports } from "@/db/db-service";
+import { listReports } from "@/db/functions/report";
 import { requireAdmin } from "@/lib/admin-auth";
 import log from "@/lib/admin-logger";
 
@@ -13,7 +13,7 @@ export async function GET(request: Request) {
   const status = url.searchParams.get("status") || undefined;
   const paperId = url.searchParams.get("paperId") || undefined;
 
-  const reports = await listPaperReports({ status, paperId });
+  const reports = await listReports({ status, paperId });
   await log("reports.list", {
     count: reports.length,
     status: status ?? null,

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
-import { getPaperVoteStatus, recordPaperVote, getPaper } from "@/db/db-service";
+import { getVoteStatus, recordVote } from "@/db/functions/vote";
+import { getPaper } from "@/db/functions/paper";
 import log from "@/lib/server-logger";
 import { allowRequest } from "@/lib/rate-limit";
 import { clientAddress } from "@/lib/request-info";
@@ -14,7 +15,7 @@ export async function GET(
   const url = new URL(request.url);
   const clientId = url.searchParams.get("clientId") || undefined;
 
-  const status = await getPaperVoteStatus(id, clientId);
+  const status = await getVoteStatus(id, clientId);
   return NextResponse.json(status);
 }
 
@@ -64,7 +65,7 @@ export async function POST(
   }
 
   try {
-    const result = await recordPaperVote({
+    const result = await recordVote({
       paperId: id,
       clientId,
       voteType: vote,

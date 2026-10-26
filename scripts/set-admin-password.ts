@@ -1,19 +1,16 @@
 import bcrypt from "bcryptjs";
 const password = prompt("Admin password:")?.trim();
 
-if (!password) {
+if (!password)
   throw new Error("A non-empty password is required.");
-}
 
 // Hash the password using bcrypt with a cost factor of 12
 const hash = await bcrypt.hash(password, 12);
 
-const envPath = ".env.local";
+const envPath = ".env.local"; //Safer that messing with .env
 const existing = (await Bun.file(envPath).exists())
   ? await Bun.file(envPath).text()
   : "";
-
-console.log(hash);
 
 const hashbytes = new TextEncoder().encode(hash);
 const hashToStore = hashbytes.toBase64();

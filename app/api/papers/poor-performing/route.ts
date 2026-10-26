@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { listPoorPerformingPapers } from "@/db/db-service";
+import { listPoorPerformingPapers } from "@/db/functions/paper";
 import { requireAdmin } from "@/lib/admin-auth";
 import log from "@/lib/admin-logger";
 

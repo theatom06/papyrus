@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { updatePaperReportStatus, deletePaperReport } from "@/db/db-service";
+import { updateReportStatus, deleteReport } from "@/db/functions/report";
 import { requireAdmin } from "@/lib/admin-auth";
 import log from "@/lib/admin-logger";
 
@@ -36,7 +36,7 @@ export async function PATCH(
     );
   }
 
-  const updated = await updatePaperReportStatus(reportId, status);
+  const updated = await updateReportStatus(reportId, status);
   if (!updated) {
     return NextResponse.json({ error: "Report not found." }, { status: 404 });
   }
@@ -58,7 +58,7 @@ export async function DELETE(
     return NextResponse.json({ error: "Invalid report ID." }, { status: 400 });
   }
 
-  await deletePaperReport(reportId);
+  await deleteReport(reportId);
   await log("report.deleted", { reportId });
   return NextResponse.json({ ok: true });
 }

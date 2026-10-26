@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
-import { getPaper, incrementDownloads } from "@/db/db-service";
+import { getPaper } from "@/db/functions/paper";
+import { incrementDownloads } from "@/db/functions/helpers";
 import { readPaperFile } from "@/db/file-storage";
 import log from "@/lib/server-logger";
 import { requireAdmin } from "@/lib/admin-auth";

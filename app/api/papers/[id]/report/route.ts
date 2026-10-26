@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
-import { createPaperReport, getPaper } from "@/db/db-service";
+import { getPaper } from "@/db/functions/paper";
+import { createReport } from "@/db/functions/report";
 import log from "@/lib/server-logger";
 import { allowRequest } from "@/lib/rate-limit";
 import { clientAddress } from "@/lib/request-info";
@@ -50,7 +51,7 @@ export async function POST(
   }
 
   try {
-    const report = await createPaperReport({
+    const report = await createReport({
       paperId: id,
       reason,
       details,

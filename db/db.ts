@@ -1,54 +1,23 @@
-import { Database } from "bun:sqlite";
+import { Database, type SQLQueryBindings } from "bun:sqlite";
 
-export type QueryResult = {
-  all(...params: unknown[]): unknown[];
-  get(...params: unknown[]): unknown;
-};
+let db: Database | null = null;
 
-export type PreparedStatement = QueryResult & {
-  run(...params: unknown[]): {
-    lastInsertRowid?: number | bigint;
-    changes?: number;
-  };
-};
+export async function getDb(): Promise<Database> {
+  if (!db) {
+    db = new Database(process.env.DB_PATH || "papyrus.sqlite");
 
-export type SqlDatabase = {
-  exec(sql: string): void;
+    const schemaFile = Bun.file("./schema.sql");
+    const schema = await schemaFile.text();
 
-  run(
-    sql: string,
-    ...params: unknown[]
-  ): {
-    lastInsertRowid?: number | bigint;
-    changes?: number;
-  };
+    db.run(schema);
+  }
 
-  query<T = unknown>(
-    sql: string,
-  ): {
-    all(...params: unknown[]): T[];
-    get(...params: unknown[]): T | null;
-  };
-
-  prepare(sql: string): PreparedStatement;
-};
-
-let databasePromise: Promise<SqlDatabase> | undefined;
-
-export async function getSqlDatabase() {
-  databasePromise ??= openDatabase();
-  return databasePromise;
+  return db;
 }
 
-async function readSchema() {
-  return Bun.file(new URL("./schema.sql", import.meta.url)).text();
-}
-
-async function openDatabase(): Promise<SqlDatabase> {
-  const schema = await readSchema();
-  const databasePath = process.env.DB_PATH || "papyrus.sqlite";
-
-  const database = new Database(databasePath);
-  database.run(schema);
-  return database;
+export function slugify(value: string) {
+  return value
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-");
 }

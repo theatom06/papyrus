@@ -2,13 +2,12 @@ import { NextResponse } from "next/server";
 import log from "@/lib/server-logger";
 import {
   createPaper,
-  createContributorSubmission,
   deletePaper,
-  hasValidPaperMetadata,
   isPaperStatus,
   listPapers,
-  resolvePaperMetadata,
-} from "@/db/db-service";
+} from "@/db/functions/paper";
+import { createContributorSubmission } from "@/db/functions/submission";
+import { hasValidPaperMetadata, resolvePaperMetadata } from "@/db/functions/helpers";
 import { savePaperFile, removePaperFile } from "@/db/file-storage";
 import { allowRequest } from "@/lib/rate-limit";
 import { clientAddress } from "@/lib/request-info";

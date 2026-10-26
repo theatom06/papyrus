@@ -12,14 +12,10 @@ await mkdir(path.dirname(logPath), { recursive: true });
 const file = Bun.file(logPath);
 const writer = file.writer({ highWaterMark: 1024 * 1024 });
 
-export default async function log(action: string, details: LogEntry = {}) {
-  const entry = JSON.stringify({
-    ...details,
-    timestamp: new Date().toISOString(),
-    action,
-  });
-
-  writer.write(`${entry}\n`);
+export default async function log(message: string, details: LogEntry = {}) {
+  writer.write(
+    `${new Date().toISOString()} [-] ${message} [-] ${JSON.stringify(details)}\n`,
+  );
 }
 
 process.once("beforeExit", async () => {

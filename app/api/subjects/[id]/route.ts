@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/admin-auth";
-import { deleteSubject, updateSubject } from "@/db/db-service";
+import { deleteSubject, updateSubject } from "@/db/functions/board";
 
 export const dynamic = "force-dynamic";
 

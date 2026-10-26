@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import log from "@/lib/admin-logger";
 import serverLog from "@/lib/server-logger";
-import { getBoardOptions, updateBoard } from "@/db/db-service";
+import { getBoardOptions, updateBoard } from "@/db/db";
 import { requireAdmin } from "@/lib/admin-auth";
 
 export const dynamic = "force-dynamic";

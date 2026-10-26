@@ -73,3 +73,14 @@ The papers have a neraly linear flow from submission to approval, ensuring quali
 5. Users can then browse, search, and view the approved papers in the archive.
 
 The feedback loop is closed by allowing users to report issues with papers, which are then reviewed by admins. This data is stored in the database for tracking and improvement of the archive.
+
+-- 
+
+## .env Variables
+
+- `ADMIN_PASSWORD_HASH`: A base64 brcypt hash of the admin password for accessing the admin dashboard. Usually generated using `scripts/set-admin-password.ts`.
+- `SERVER_LOG_PATH`: The path to the server logs folder. Defaults to `./logs/server/UUIDV7.log`.
+- `ADMIN_LOG_PATH`: The path to the admin logs folder. Defaults to `./logs/admin/UUIDV7.log`.
+- `ADMIN_JWT_SECRET`: A secret key used for signing and verifying JWT tokens for admin authentication. Must be a secure, random string.
+- `STORAGE_DIR`: The directory where uploaded PDFs are stored. Defaults to `./storage`.
+- `DB_PATH`: The path to the SQLite database file. Defaults to `./db/papyrus.db`.
