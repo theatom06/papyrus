@@ -123,7 +123,7 @@ export default function UploadPage() {
                 if (typeValue === CUSTOM)
                   form.set("type", String(form.get("customType") || ""));
                 try {
-                  await apiRequest("/api/papers", {
+                  await apiRequest("/api/papers/upload", {
                     method: "POST",
                     body: form,
                   });

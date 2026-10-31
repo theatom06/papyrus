@@ -10,7 +10,8 @@ export type PaperInput = {
   subjectId: number;
   resourceTypeId: number;
   examYear: number;
-  filePath: string;
+  fileName: string;
+  fileId: string;
   fileSizeBytes: number;
   status?: PaperStatus;
 };
@@ -22,8 +23,8 @@ export async function createPaper(id: string, input: PaperInput) {
   db.prepare(
     `INSERT INTO papers
     (id, title, description, duration, board_id, class_level_id, subject_id,
-     resource_type_id, exam_year, file_path, file_size_bytes, status)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+     resource_type_id, exam_year, file_id, file_name, file_size_bytes, status)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
   ).run(
     id,
     input.title,
@@ -34,7 +35,8 @@ export async function createPaper(id: string, input: PaperInput) {
     input.subjectId,
     input.resourceTypeId,
     input.examYear,
-    input.filePath,
+    input.fileId,
+    input.fileName,
     input.fileSizeBytes,
     input.status || "review",
   );
@@ -98,7 +100,7 @@ export async function deletePaper(id: string) {
 function paperQuery(includeContact: boolean) {
   return `
   SELECT p.id, p.title, p.description, p.exam_year AS year,
-    p.duration, p.file_path, p.file_size_bytes, p.downloads_count AS downloads,
+    p.duration, p.file_id, p.file_name, p.file_size_bytes, p.downloads_count AS downloads,
     p.upvotes_count AS upvotes, p.downvotes_count AS downvotes,
     ${includeContact ? "cs.contributor_email, cs.comments AS contributor_comments, " : ""}p.status, p.created_at,
     b.id AS board_id, b.name AS board_name,

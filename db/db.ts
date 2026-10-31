@@ -6,7 +6,7 @@ export async function getDb(): Promise<Database> {
   if (!db) {
     db = new Database(process.env.DB_PATH || "papyrus.sqlite");
 
-    const schemaFile = Bun.file("./schema.sql");
+    const schemaFile = Bun.file("db/schema.sql");
     const schema = await schemaFile.text();
 
     db.run(schema);

@@ -4,29 +4,25 @@ import "./style.css";
 
 import { useEffect, useMemo, useState } from "react";
 import {
-  Archive,
   BarChart3,
   BookOpen,
   Check,
-  ChevronDown,
   ExternalLink,
   MoreHorizontal,
   Plus,
   Settings2,
   ShieldCheck,
   Trash2,
-  Users,
   X,
   Moon,
   Sun,
   LogOut,
-  FolderKanban,
   ArrowRight,
   Flag,
   ThumbsDown,
   ThumbsUp,
-  AlertTriangle,
 } from "lucide-react";
+
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Modal } from "@/components/modal";

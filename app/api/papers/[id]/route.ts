@@ -15,14 +15,17 @@ export async function GET(
 ) {
   const { id } = await context.params;
   await serverLog("paper.requested", { paperId: id });
+
   const admin = new URL(request.url).searchParams.get("scope") === "admin";
   if (admin) {
     const denied = await requireAdmin(request);
     if (denied) return denied;
   }
+  
   const paper = await getPaper(id, admin);
   if (!paper)
     return NextResponse.json({ error: "Paper not found." }, { status: 404 });
+
   return NextResponse.json({ paper });
 }
 

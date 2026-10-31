@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
 import { getPaper } from "@/db/functions/paper";
 import { incrementDownloads } from "@/db/functions/helpers";
-import { readPaperFile } from "@/db/file-storage";
 import log from "@/lib/server-logger";
 import { requireAdmin } from "@/lib/admin-auth";
- 
+import { getFileUrl } from "@/db/hc-cdn";
+
 export const dynamic = "force-dynamic";
 
 export async function GET(
@@ -22,24 +22,18 @@ export async function GET(
   }
 
   const paper = (await getPaper(id, admin)) as {
-    file_path?: string;
+    file_id?: string;
+    file_name?: string;
     title?: string;
   } | null;
 
-  if (!paper?.file_path)
+  if (!paper?.file_id || !paper?.file_name)
     return NextResponse.json({ error: "Paper not found." }, { status: 404 });
   try {
-    const content = await readPaperFile(paper.file_path);
-    if (!new URL(request.url).searchParams.has("preview")) {
-      await incrementDownloads(id);
-    }
-    return new Response(content, {
-      headers: {
-        "Content-Type": "application/pdf",
-        "Content-Disposition": `${new URL(request.url).searchParams.has("preview") ? "inline" : "attachment"}; filename="${safeFileName(paper.title || id)}.pdf"`,
-        "Cache-Control": "private, no-store",
-      },
-    });
+    const fileUrl = await getFileUrl(paper.file_id, paper.file_name);
+    await incrementDownloads(id);
+    
+    return NextResponse.redirect(fileUrl);
   } catch (error) {
     await log("paper.download_failed", {
       paperId: id,
@@ -50,10 +44,4 @@ export async function GET(
       { status: 404 },
     );
   }
-}
-
-function safeFileName(value: string) {
-  return (
-    value.replace(/[^a-z0-9_-]+/gi, "-").replace(/^-+|-+$/g, "") || "paper"
-  );
 }

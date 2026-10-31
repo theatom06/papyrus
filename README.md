@@ -84,3 +84,4 @@ The feedback loop is closed by allowing users to report issues with papers, whic
 - `ADMIN_JWT_SECRET`: A secret key used for signing and verifying JWT tokens for admin authentication. Must be a secure, random string.
 - `STORAGE_DIR`: The directory where uploaded PDFs are stored. Defaults to `./storage`.
 - `DB_PATH`: The path to the SQLite database file. Defaults to `./db/papyrus.db`.
+- `HC_CDN_API_KEY`: Hack Club CDN API key for uploading files to Hack Club's CDN. Required for production deployments.

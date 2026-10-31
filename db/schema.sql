@@ -49,7 +49,8 @@ CREATE TABLE IF NOT EXISTS papers (
   subject_id INTEGER NOT NULL,
   resource_type_id INTEGER NOT NULL,
   exam_year INTEGER NOT NULL,
-  file_path TEXT NOT NULL,
+  file_name TEXT NOT NULL,
+  file_id TEXT NOT NULL,
   file_size_bytes INTEGER NOT NULL,
   downloads_count INTEGER NOT NULL DEFAULT 0,
   upvotes_count INTEGER NOT NULL DEFAULT 0,
@@ -100,9 +101,7 @@ CREATE INDEX IF NOT EXISTS idx_reports_paper ON paper_reports(paper_id);
 CREATE INDEX IF NOT EXISTS idx_reports_status ON paper_reports(status);
 CREATE INDEX IF NOT EXISTS idx_votes_paper ON paper_votes(paper_id);
 CREATE INDEX IF NOT EXISTS idx_votes_client ON paper_votes(paper_id, client_id);
-
-CREATE INDEX IF NOT EXISTS idx_papers_filter
-  ON papers(board_id, class_level_id, subject_id, resource_type_id, exam_year);
+CREATE INDEX IF NOT EXISTS idx_papers_filter ON papers(board_id, class_level_id, subject_id, resource_type_id, exam_year);
 CREATE INDEX IF NOT EXISTS idx_resource_types_board ON resource_types(board_id);
 CREATE INDEX IF NOT EXISTS idx_class_levels_board ON class_levels(board_id);
 CREATE INDEX IF NOT EXISTS idx_subjects_class_level ON subjects(class_level_id);
