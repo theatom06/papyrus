@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "bun --bun next dev",
-    "build": "bun --bun next build",
+    "build": "bun --bun next build && touch db.sqlite",
     "start": "bun --bun next start",
     "set:password": "bun scripts/set-admin-password.ts",
     "format": "prettier . --write"

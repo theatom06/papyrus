@@ -3,21 +3,32 @@ import path from "node:path";
 
 type LogEntry = Record<string, boolean | number | string | null>;
 
-const dirPath =
-  process.env.ADMIN_LOG_PATH || path.join(process.cwd(), "logs", "admin");
-const logPath = path.join(dirPath, `${Bun.randomUUIDv7()}.log`);
+let log;
 
-await mkdir(path.dirname(logPath), { recursive: true });
+if (!process.env.NOLOGS) {
 
-const file = Bun.file(logPath);
-const writer = file.writer({ highWaterMark: 1024 * 1024 });
+  const dirPath =
+    process.env.ADMIN_LOG_PATH || path.join(process.cwd(), "logs", "admin");
+  const logPath = path.join(dirPath, `${Bun.randomUUIDv7()}.log`);
 
-export default async function log(message: string, details: LogEntry = {}) {
-  writer.write(
-    `${new Date().toISOString()} [-] ${message} [-] ${JSON.stringify(details)}\n`,
-  );
+  await mkdir(path.dirname(logPath), { recursive: true });
+
+  const file = Bun.file(logPath);
+  const writer = file.writer({ highWaterMark: 1024 * 1024 });
+
+  log = (message: string, details: LogEntry = {}) => {
+    writer.write(
+      `${new Date().toISOString()} [-] ${message} [-] ${JSON.stringify(details)}\n`,
+    );
+  };
+
+  process.once("beforeExit", async () => {
+    await writer.flush();
+  });
+} else {
+  let log = (message: string, details: LogEntry = {}) => {
+    console.log(`${new Date().toISOString()} [-] ${message} [-] ${JSON.stringify(details)}`);
+  };
 }
 
-process.once("beforeExit", async () => {
-  await writer.flush();
-});
+export default log;
