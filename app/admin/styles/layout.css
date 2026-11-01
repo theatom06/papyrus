@@ -1,0 +1,58 @@
+.admin-app {
+  --admin-surface: var(--sand);
+  --admin-sidebar: color-mix(in srgb, var(--sand) 88%, var(--ink));
+  --admin-topbar: var(--linen);
+  min-height: 100vh;
+  display: flex;
+  background: var(--admin-surface);
+  color: var(--ink);
+  font-family: var(--sans);
+}
+
+.admin-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 91px;
+  padding: 0 4.5vw;
+  border-bottom: var(--border-width) solid var(--border);
+  background: var(--admin-topbar);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+
+  .mobile-kicker {
+    color: #a3998f;
+    font: 500 9px var(--mono);
+    letter-spacing: 0.12em;
+    display: block;
+    padding: 0;
+  }
+
+  h1 {
+    font: 700 27px var(--serif);
+    letter-spacing: -0.04em;
+    margin: 7px 0 0;
+    color: var(--ink);
+  }
+
+  .top-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+}
+
+.dashboard-content {
+  max-width: 1360px;
+  width: 100%;
+  padding: 40px 4.5vw 100px;
+  margin: 0 auto;
+}

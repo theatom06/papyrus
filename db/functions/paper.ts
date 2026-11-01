@@ -229,8 +229,11 @@ export async function listPapers(options: ListPapersOptions) {
 
   const total =
     params.length > 0
-      ? (db.query<{ count: number }, SQLQueryBindings[]>(countQuery).get(...params)?.count ?? 0)
-      : (db.query<{ count: number }, SQLQueryBindings[]>(countQuery).get()?.count ?? 0);
+      ? (db
+          .query<{ count: number }, SQLQueryBindings[]>(countQuery)
+          .get(...params)?.count ?? 0)
+      : (db.query<{ count: number }, SQLQueryBindings[]>(countQuery).get()
+          ?.count ?? 0);
 
   const limit = options.limit ?? (options.admin ? 500 : 20);
   const offset = options.offset ?? 0;

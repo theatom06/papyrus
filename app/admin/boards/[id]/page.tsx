@@ -1,17 +1,14 @@
 "use client";
 
 import "@/app/admin/style.css";
+import "./style.css";
 
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   ArrowLeft,
-  BookOpen,
-  Check,
-  ChevronDown,
   ExternalLink,
-  FolderKanban,
   GraduationCap,
   Layers,
   Moon,
@@ -20,10 +17,14 @@ import {
   Save,
   Sun,
   Trash2,
-  X,
-  Palette,
 } from "lucide-react";
 import { apiRequest } from "@/lib/api-client";
+import {
+  applyTheme,
+  getStoredTheme,
+  nextTheme,
+  type Theme,
+} from "@/util/theme";
 import { Modal } from "@/components/modal";
 import { useToast } from "@/components/toast";
 
@@ -79,7 +80,7 @@ export default function AdminBoardDetailPage() {
   const [board, setBoard] = useState<Board | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [dark, setDark] = useState(false);
+  const [theme, setTheme] = useState<Theme>("light");
   const [showUnsavedModal, setShowUnsavedModal] = useState(false);
 
   // Board details edit state
@@ -145,9 +146,9 @@ export default function AdminBoardDetailPage() {
   ]);
 
   useEffect(() => {
-    const saved = localStorage.getItem("papyrus-admin-theme") === "dark";
-    setDark(saved);
-    document.documentElement.classList.toggle("admin-dark", saved);
+    const saved = getStoredTheme();
+    setTheme(saved);
+    applyTheme(saved);
     loadBoard();
   }, [boardId]);
 
@@ -163,10 +164,10 @@ export default function AdminBoardDetailPage() {
   }, [isDirty]);
 
   function toggleDarkMode() {
-    const next = !dark;
-    setDark(next);
-    document.documentElement.classList.toggle("admin-dark", next);
-    localStorage.setItem("papyrus-admin-theme", next ? "dark" : "light");
+    const next = nextTheme(theme);
+    setTheme(next);
+    applyTheme(next);
+    localStorage.setItem("papyrus-theme", next);
   }
 
   const loadBoard = useCallback(async () => {
@@ -488,7 +489,7 @@ export default function AdminBoardDetailPage() {
             onClick={toggleDarkMode}
             aria-label="Toggle dark mode"
           >
-            {dark ? <Sun size={17} /> : <Moon size={17} />}
+            {theme === "light" ? <Moon size={17} /> : <Sun size={17} />}
           </button>
         </div>
       </header>

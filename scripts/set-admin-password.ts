@@ -1,8 +1,7 @@
 import bcrypt from "bcryptjs";
 const password = prompt("Admin password:")?.trim();
 
-if (!password)
-  throw new Error("A non-empty password is required.");
+if (!password) throw new Error("A non-empty password is required.");
 
 // Hash the password using bcrypt with a cost factor of 12
 const hash = await bcrypt.hash(password, 12);

@@ -1,0 +1,126 @@
+.not-found-page {
+  display: grid;
+  justify-items: center;
+  min-height: calc(100vh - 106px);
+  padding: 82px 24px 96px;
+  text-align: center;
+  background: radial-gradient(
+    ellipse at 50% 36%,
+    var(--linen) 0%,
+    transparent 58%
+  );
+}
+
+.not-found-mark {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  color: var(--amber);
+  font-weight: 700;
+  font-size: clamp(var(--text-4xl), 14vw, 150px);
+  font-family: var(--serif);
+  line-height: 1;
+
+  span {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    line-height: 1;
+  }
+
+  svg {
+    fill: var(--ink);
+    transform: rotate(-8deg);
+    width: 0.65em;
+    height: 0.65em;
+    flex-shrink: 0;
+  }
+}
+
+.not-found-kicker {
+  margin: 38px 0 0;
+  color: var(--amber);
+  font: var(--text-xs) var(--mono);
+  letter-spacing: 0.14em;
+}
+
+.not-found-page h1 {
+  max-width: 650px;
+  margin: 20px 0 18px;
+  font: 700 clamp(var(--text-4xl), 6vw, 64px)/1.08 var(--serif);
+  letter-spacing: -0.07em;
+
+  em {
+    color: var(--amber);
+    font-weight: 400;
+  }
+}
+
+.not-found-copy {
+  max-width: 410px;
+  margin: 0;
+  color: var(--slate);
+  font-size: var(--text-base);
+  line-height: 1.7;
+}
+
+.not-found-actions {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-3);
+  margin-top: 30px;
+
+  .button {
+    gap: 7px;
+  }
+}
+
+.not-found-stamp {
+  display: flex;
+  justify-content: space-between;
+  width: min(100%, 350px);
+  margin-top: 56px;
+  padding: var(--space-3) var(--space-4);
+  border-block: var(--border-width) solid var(--border);
+  color: var(--slate);
+  font: var(--text-2xs) var(--mono);
+
+  strong {
+    color: var(--amber);
+    font-size: var(--text-xs);
+  }
+}
+
+@media (max-width: 760px) {
+  .not-found-page {
+    min-height: calc(100vh - 76px);
+    padding: 68px 18px 78px;
+  }
+
+  .not-found-mark {
+    gap: 9px;
+
+    svg {
+      width: 52px;
+      height: 52px;
+    }
+  }
+
+  .not-found-page h1 {
+    font-size: clamp(var(--text-4xl), 11vw, 54px);
+  }
+
+  .not-found-actions {
+    flex-direction: column;
+    width: min(100%, 280px);
+
+    .button {
+      justify-content: center;
+    }
+  }
+
+  .not-found-stamp {
+    width: min(100%, 300px);
+    font-size: var(--text-2xs);
+  }
+}

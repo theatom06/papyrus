@@ -15,18 +15,16 @@ import {
 
 export function AdminSidebar({
   active,
-  reviewCount,
+  reviewCount = 0,
   reportCount = 0,
   poorCount = 0,
-  onNavigate,
   onSettings,
 }: {
   active?: string;
-  reviewCount: number;
+  reviewCount?: number;
   reportCount?: number;
   poorCount?: number;
-  onNavigate?: (section: string) => void;
-  onSettings: () => void;
+  onSettings?: () => void;
 }) {
   const pathname = usePathname();
 
@@ -59,44 +57,46 @@ export function AdminSidebar({
       <Link href="/" className="admin-brand">
         <img src="/logo.svg" alt="Papyrus logo" className="brand-logo" />
         <span>
-          <strong>papyrus</strong>
-          <small>ADMIN STUDIO</small>
+          <strong>Papyrus</strong>
+          <small>STUDIO</small>
         </span>
       </Link>
+
       <div className="sidebar-label">WORKSPACE</div>
+
       <nav>
         {nav.map(({ label, href, icon: Icon, count }) => {
           const isSelected = active
-            ? active === label
-            : pathname === href ||
-              (href !== "/admin" && pathname?.startsWith(href));
+            ? active.toLowerCase() === label.toLowerCase()
+            : href === "/admin"
+              ? pathname === "/admin"
+              : pathname?.startsWith(href);
 
           return (
             <Link
               key={label}
               href={href}
               className={isSelected ? "selected" : ""}
-              onClick={() => {
-                if (onNavigate) {
-                  onNavigate(label);
-                }
-              }}
             >
-              <Icon size={17} /> {label}
+              <Icon size={17} />
+              <span>{label}</span>
               {typeof count === "number" && count > 0 && <b>{count}</b>}
             </Link>
           );
         })}
       </nav>
+
       <div className="sidebar-bottom">
-        <button type="button" onClick={onSettings}>
-          <Settings2 size={17} /> Quick Settings
-        </button>
+        {onSettings && (
+          <button type="button" onClick={onSettings}>
+            <Settings2 size={16} /> Quick Settings
+          </button>
+        )}
         <Link href="/">
-          <ChevronDown size={15} /> Back to archive
+          <ChevronDown size={15} /> Back to Archive
         </Link>
         <div className="admin-user">
-          <span>SR</span>
+          <span className="admin-avatar">SR</span>
           <div>
             <strong>Steve</strong>
             <small>Administrator</small>

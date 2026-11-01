@@ -1,0 +1,187 @@
+.board-page {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: var(--space-8) var(--space-8) 80px;
+}
+
+.board-section {
+  background: var(--linen);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-2xl);
+  margin-top: var(--space-6);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+
+  .board-section-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: var(--space-5) var(--space-6);
+    border-bottom: var(--border-width) solid var(--border);
+
+    h2 {
+      font: 700 var(--text-xl) var(--serif);
+      margin: 0 0 var(--space-1);
+      color: var(--ink);
+    }
+
+    p {
+      color: var(--slate);
+      font-size: 12px;
+      margin: 0;
+    }
+
+    .board-code {
+      color: var(--amber-dark);
+      font: var(--text-sm) var(--mono);
+      margin-top: var(--space-1);
+    }
+  }
+
+  .board-form {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+
+    &.compact {
+      gap: 6px;
+    }
+
+    .board-input {
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-md);
+      background: var(--linen);
+      color: var(--ink);
+      padding: var(--space-2) var(--space-3);
+      font: var(--text-base) var(--sans);
+      min-width: 150px;
+      outline: none;
+
+      &:focus {
+        border-color: var(--amber);
+      }
+    }
+  }
+}
+
+.class-levels {
+  padding: var(--space-5) var(--space-6) var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+
+  .class-level-card {
+    border: var(--border-width) solid var(--border);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    background: color-mix(in srgb, var(--sand) 35%, var(--linen));
+
+    .class-level-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 14px 18px;
+      border-bottom: var(--border-width) solid var(--border);
+
+      .class-level-name {
+        font: 700 15px var(--serif);
+        color: var(--ink);
+      }
+
+      .class-level-actions {
+        display: flex;
+        gap: 6px;
+      }
+    }
+
+    .subjects-list {
+      padding: var(--space-3) 18px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+
+      .subject-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--space-3);
+        padding: 10px 14px;
+        border-radius: var(--radius-md);
+        border: var(--border-width) solid transparent;
+        background: var(--linen);
+        transition:
+          background var(--transition-fast),
+          border-color var(--transition-fast);
+
+        &:hover {
+          background: color-mix(in srgb, var(--amber) 8%, var(--linen));
+          border-color: color-mix(in srgb, var(--amber) 30%, var(--border));
+        }
+
+        .subject-name {
+          font-size: var(--text-base);
+          color: var(--ink);
+          min-width: 0;
+          flex: 1;
+        }
+
+        .subject-actions {
+          display: flex;
+          gap: 6px;
+          flex: 0 0 auto;
+        }
+      }
+    }
+  }
+}
+
+.resource-types-list {
+  padding: var(--space-4) var(--space-6) var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+
+  .resource-type-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding: 10px 14px;
+    border-radius: var(--radius-md);
+    border: var(--border-width) solid transparent;
+    background: color-mix(in srgb, var(--sand) 25%, var(--linen));
+    transition:
+      background var(--transition-fast),
+      border-color var(--transition-fast);
+
+    &:hover {
+      background: color-mix(in srgb, var(--amber) 8%, var(--linen));
+      border-color: color-mix(in srgb, var(--amber) 30%, var(--border));
+    }
+
+    .resource-type-name {
+      font-size: var(--text-base);
+      color: var(--ink);
+    }
+
+    .resource-type-actions {
+      display: flex;
+      gap: 6px;
+      flex: 0 0 auto;
+    }
+  }
+}
+
+.dark {
+  .board-section {
+    background: var(--linen);
+    border-color: var(--border);
+  }
+
+  .board-input {
+    background: #202f38;
+  }
+}

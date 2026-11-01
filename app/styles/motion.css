@@ -44,30 +44,28 @@
 }
 
 .resource-grid-enter .resource-card {
-  animation: card-in-left 0.5s both;
+  animation: card-in-left var(--transition-base) both;
   animation-delay: calc(var(--card-index, 0) * 70ms);
 
   &:nth-child(even) {
     animation-name: card-in-right;
   }
-}
 
-.paper-thumb {
-  transition: filter 0.25s;
-}
-
-.resource-card:hover {
-  & .paper-thumb {
+  &:hover .paper-thumb {
     filter: saturate(1.12);
   }
 }
 
+.paper-thumb {
+  transition: filter var(--transition-smooth);
+}
+
 .filters {
-  & button {
+  button {
     transition:
-      transform 0.2s,
-      background 0.2s,
-      color 0.2s;
+      transform var(--transition-base),
+      background var(--transition-base),
+      color var(--transition-base);
 
     &:hover {
       transform: translateY(-2px);
@@ -80,23 +78,23 @@
 .pin-main,
 .pin-menu-trigger {
   transition:
-    transform 0.2s,
-    box-shadow 0.2s;
+    transform var(--transition-base),
+    box-shadow var(--transition-base);
+
+  &:hover {
+    transform: translateY(-2px);
+  }
 }
 
-.button:hover,
-.theme-button:hover,
-.settings-link:hover,
-.pin-main:hover,
-.pin-menu-trigger:hover {
+.settings-link:hover {
   transform: translateY(-2px);
 }
 
 .card-subject-row {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-top: 12px;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
 }
 
 .resource-type {
@@ -108,7 +106,7 @@
 .filter-chip {
   padding: 5px 8px !important;
 
-  & .subject-chip {
+  .subject-chip {
     border: 0;
     background: transparent;
     padding: 0;

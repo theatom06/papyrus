@@ -41,8 +41,7 @@ export default function UploadPage() {
   useEffect(() => {
     apiRequest<{ boards?: BoardOption[] }>("/api/boards")
       .then((data) => {
-        const nextBoards = data.boards || [];
-        setBoards(nextBoards);
+        setBoards(data.boards || []);
       })
       .catch(() =>
         setCatalogError(

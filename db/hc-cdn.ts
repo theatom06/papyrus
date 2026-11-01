@@ -6,30 +6,33 @@ if (!apiKey) {
 }
 
 type UploadResponse = {
-  id: string,
-  filename: string,
-  size: number,
-  content_type: string,
-  url: string,
-  created_at: string,
+  id: string;
+  filename: string;
+  size: number;
+  content_type: string;
+  url: string;
+  created_at: string;
 };
 
 export type UploadDetails = {
-  id: string,
-  filename: string,
-  size: number,
+  id: string;
+  filename: string;
+  size: number;
 };
 
-export async function uploadFile(file: File | Blob, filename?: string): Promise<UploadDetails> {
+export async function uploadFile(
+  file: File | Blob,
+  filename?: string,
+): Promise<UploadDetails> {
   const formData = new FormData();
-  formData.append('file', file, filename);
+  formData.append("file", file, filename);
 
   const uploadUrl = `${apiUrl}/upload`;
 
   const response = await fetch(uploadUrl, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Authorization': `Bearer ${apiKey}`,
+      Authorization: `Bearer ${apiKey}`,
     },
     body: formData,
   });
@@ -40,7 +43,7 @@ export async function uploadFile(file: File | Blob, filename?: string): Promise<
   }
 
   const data: UploadResponse = await response.json();
-    
+
   if (!data.id || !data.filename || !data.url) {
     throw new Error("CDN response did not contain all required fields.");
   }
@@ -49,10 +52,13 @@ export async function uploadFile(file: File | Blob, filename?: string): Promise<
     id: data.id,
     filename: data.filename,
     size: data.size,
-  }
+  };
 }
 
-export async function getFileUrl(id: string, filename: string): Promise<string> {
+export async function getFileUrl(
+  id: string,
+  filename: string,
+): Promise<string> {
   return `https://cdn.hackclub.com/${id}/${filename}`;
 }
 
@@ -60,9 +66,9 @@ export async function deleteFile(id: string): Promise<void> {
   const deleteUrl = `${apiUrl}/upload/${id}`;
 
   const response = await fetch(deleteUrl, {
-    method: 'DELETE',
+    method: "DELETE",
     headers: {
-      'Authorization': `Bearer ${apiKey}`,
+      Authorization: `Bearer ${apiKey}`,
     },
   });
 

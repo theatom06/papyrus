@@ -70,6 +70,9 @@ export async function POST(
       clientId,
       voteType: vote,
     });
+    if (!result) {
+      throw new Error("Vote was not persisted.");
+    }
     await log("paper.voted", { paperId: id, vote });
     return NextResponse.json(result);
   } catch (error) {

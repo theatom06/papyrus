@@ -15,6 +15,7 @@ import { Modal } from "@/components/modal";
 import { PageTitle } from "@/components/page-title";
 import { Dropdown } from "@/components/dropdown";
 import { apiRequest } from "@/lib/api-client";
+import { calculateScore } from "@/util/score";
 
 export default function PinsPage() {
   const { pins, groups, save } = useStorage();
@@ -40,6 +41,15 @@ export default function PinsPage() {
             classLevel: String(paper.class_level),
             type: String(paper.type),
             downloads: Number(paper.downloads) || 0,
+            upvotes: Number(paper.upvotes) || 0,
+            downvotes: Number(paper.downvotes) || 0,
+            createdAt: String(paper.created_at || ""),
+            score: calculateScore(
+              Number(paper.upvotes) || 0,
+              Number(paper.downvotes) || 0,
+              Number(paper.downloads) || 0,
+              String(paper.created_at || new Date().toISOString()),
+            ),
             read: paper.duration
               ? Number(paper.duration) >= 60
                 ? `${Number(paper.duration) / 60} hrs`
@@ -66,6 +76,8 @@ export default function PinsPage() {
         if (sort === "subject")
           return left.subject.localeCompare(right.subject);
         if (sort === "year") return Number(right.year) - Number(left.year);
+        if (sort === "downloads") return right.downloads - left.downloads;
+        if (sort === "score") return right.score - left.score;
         const pinnedDifference =
           (pinById.get(right.id)?.pinnedAt || 0) -
           (pinById.get(left.id)?.pinnedAt || 0);
@@ -173,6 +185,8 @@ export default function PinsPage() {
                 { value: "year", label: "Exam year" },
                 { value: "title", label: "Title" },
                 { value: "subject", label: "Subject" },
+                { value: "downloads", label: "Most downloads" },
+                { value: "score", label: "Highest score" },
               ]}
             />
           </div>

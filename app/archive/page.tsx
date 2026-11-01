@@ -15,6 +15,7 @@ import { SearchBox } from "@/components/search-box";
 import { PageTitle } from "@/components/page-title";
 import { apiRequest } from "@/lib/api-client";
 import { Dropdown } from "@/components/dropdown";
+import { calculateScore } from "@/util/score";
 
 function ArchiveContent() {
   const searchParams = useSearchParams();
@@ -127,9 +128,18 @@ function ArchiveContent() {
             classLevel: String(paper.class_level),
             type: String(paper.type),
             downloads: Number(paper.downloads) || 0,
+            upvotes: Number(paper.upvotes) || 0,
+            downvotes: Number(paper.downvotes) || 0,
+            createdAt: String(paper.created_at || ""),
+            score: calculateScore(
+              Number(paper.upvotes) || 0,
+              Number(paper.downvotes) || 0,
+              Number(paper.downloads) || 0,
+              String(paper.created_at || new Date().toISOString()),
+            ),
             read: paper.duration
               ? Number(paper.duration) >= 60
-                ? `${Number(paper.duration) / 60} hrs`
+                ? `${(Number(paper.duration) / 60).toFixed(1)} hrs`
                 : `${paper.duration} min`
               : "Self-paced",
             summary: String(paper.description || ""),
@@ -160,6 +170,15 @@ function ArchiveContent() {
           classLevel: String(paper.class_level),
           type: String(paper.type),
           downloads: Number(paper.downloads) || 0,
+          upvotes: Number(paper.upvotes) || 0,
+          downvotes: Number(paper.downvotes) || 0,
+          createdAt: String(paper.created_at || ""),
+          score: calculateScore(
+            Number(paper.upvotes) || 0,
+            Number(paper.downvotes) || 0,
+            Number(paper.downloads) || 0,
+            String(paper.created_at || new Date().toISOString()),
+          ),
           read: paper.duration
             ? Number(paper.duration) >= 60
               ? `${Number(paper.duration) / 60} hrs`
@@ -195,6 +214,8 @@ function ArchiveContent() {
           if (sort === "Oldest first") return +a.year - +b.year;
           if (sort === "Title A-Z") return a.title.localeCompare(b.title);
           if (sort === "Title Z-A") return b.title.localeCompare(a.title);
+          if (sort === "Most downloads") return b.downloads - a.downloads;
+          if (sort === "Highest score") return b.score - a.score;
           return +b.year - +a.year;
         }),
     [filter, query, resources, sort],
@@ -314,6 +335,8 @@ function ArchiveContent() {
                   { value: "Oldest first", label: "Oldest first" },
                   { value: "Title A-Z", label: "Title A-Z" },
                   { value: "Title Z-A", label: "Title Z-A" },
+                  { value: "Most downloads", label: "Most downloads" },
+                  { value: "Highest score", label: "Highest score" },
                 ]}
               />
             </div>

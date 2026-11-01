@@ -27,6 +27,7 @@ import { apiRequest } from "@/lib/api-client";
 import { PdfViewer } from "@/components/pdf-viewer";
 import { VotingWidget } from "@/components/voting-widget";
 import { ReportPaperModal } from "@/components/report-paper-modal";
+import { formatDate, formatFileSize } from "@/util/format";
 
 type PaperDetail = {
   id: string;
@@ -51,13 +52,6 @@ type PaperDetail = {
   type: string;
 };
 
-function formatFileSize(bytes?: number): string {
-  if (!bytes || bytes <= 0) return "PDF document";
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-}
-
 function formatDuration(minutes?: number): string {
   if (!minutes || minutes <= 0) return "Self-paced study";
   if (minutes >= 60) {
@@ -65,20 +59,6 @@ function formatDuration(minutes?: number): string {
     return `${Number.isInteger(hours) ? hours : hours.toFixed(1)} hrs`;
   }
   return `${minutes} mins`;
-}
-
-function formatDate(isoString?: string): string {
-  if (!isoString) return "Recent";
-  try {
-    const date = new Date(isoString);
-    if (isNaN(date.getTime())) return "Recent";
-    return date.toLocaleDateString("en-US", {
-      month: "short",
-      year: "numeric",
-    });
-  } catch {
-    return "Recent";
-  }
 }
 
 export default function PaperPage() {
@@ -108,7 +88,10 @@ export default function PaperPage() {
 
   function handleShare() {
     if (typeof window !== "undefined") {
-      navigator.clipboard.writeText(window.location.href);
+      //Small change but huge convenience
+      navigator.clipboard.writeText(
+        window.location.href.replace("/paper/", "/p/"),
+      );
       setCopied(true);
       setTimeout(() => setCopied(false), 2500);
     }
@@ -152,7 +135,7 @@ export default function PaperPage() {
 
   const accentColor = paper.accent_color || "#a85d20";
   const downloadUrl = `/api/papers/${paper.id}/download`;
-  const previewUrl = `/api/papers/${paper.id}/download?preview=1`;
+  const previewUrl = `/api/papers/${paper.id}/download?preview=true`;
 
   return (
     <>
@@ -373,7 +356,11 @@ export default function PaperPage() {
               {/* Voting Widget */}
               <div className="sidebar-card voting-card">
                 <small className="sidebar-label">COMMUNITY RATING</small>
-                <VotingWidget paperId={paper.id} />
+                <VotingWidget
+                  paperId={paper.id}
+                  downloads={paper.downloads}
+                  createdAt={paper.created_at}
+                />
               </div>
 
               {/* Specifications Matrix */}

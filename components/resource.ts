@@ -7,6 +7,10 @@ export type Resource = {
   classLevel: string;
   type: string;
   downloads: number;
+  upvotes: number;
+  downvotes: number;
+  createdAt: string;
+  score: number;
   read: string;
   summary: string;
   accentColor?: string;

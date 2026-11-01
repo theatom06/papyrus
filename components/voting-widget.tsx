@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import { ThumbsUp, ThumbsDown, CheckCircle } from "lucide-react";
 import { apiRequest } from "@/lib/api-client";
 import { useToast } from "./toast";
+import { calculateScore } from "@/util/score";
 
 function getOrCreateClientId(): string {
   if (typeof window === "undefined") return "";
@@ -21,7 +22,15 @@ function getOrCreateClientId(): string {
 
 type VoteType = "up" | "down" | null;
 
-export function VotingWidget({ paperId }: { paperId: string }) {
+export function VotingWidget({
+  paperId,
+  downloads,
+  createdAt,
+}: {
+  paperId: string;
+  downloads: number;
+  createdAt: string;
+}) {
   const { showToast } = useToast();
   const [clientId, setClientId] = useState<string>("");
   const [upvotes, setUpvotes] = useState(0);
@@ -103,10 +112,15 @@ export function VotingWidget({ paperId }: { paperId: string }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ clientId: activeClientId, vote: nextVote }),
       });
+      const syncedResult = result ?? {
+        upvotes: Math.max(0, newUp),
+        downvotes: Math.max(0, newDown),
+        userVote: nextVote,
+      };
       // Sync with server response
-      setUpvotes(result.upvotes ?? Math.max(0, newUp));
-      setDownvotes(result.downvotes ?? Math.max(0, newDown));
-      setUserVote((result.userVote as VoteType) ?? nextVote);
+      setUpvotes(syncedResult.upvotes ?? Math.max(0, newUp));
+      setDownvotes(syncedResult.downvotes ?? Math.max(0, newDown));
+      setUserVote((syncedResult.userVote as VoteType) ?? nextVote);
 
       if (nextVote === "up")
         showToast("Thanks for voting this paper helpful!", "success");
@@ -133,8 +147,7 @@ export function VotingWidget({ paperId }: { paperId: string }) {
   }
 
   const totalVotes = upvotes + downvotes;
-  const percentage =
-    totalVotes > 0 ? Math.round((upvotes / totalVotes) * 100) : null;
+  const score = calculateScore(upvotes, downvotes, downloads, createdAt);
 
   return (
     <div
@@ -175,7 +188,7 @@ export function VotingWidget({ paperId }: { paperId: string }) {
       <div className="vote-widget-summary">
         {totalVotes > 0 ? (
           <span>
-            {percentage}% student rating ({totalVotes}{" "}
+            {(score * 100).toFixed(2)}% student rating ({totalVotes}{" "}
             {totalVotes === 1 ? "vote" : "votes"})
           </span>
         ) : (

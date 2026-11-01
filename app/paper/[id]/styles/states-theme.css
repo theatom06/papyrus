@@ -1,0 +1,134 @@
+.detail-loading-state {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  padding: 40px 0;
+
+  .skeleton {
+    background: linear-gradient(
+      90deg,
+      var(--border) 25%,
+      color-mix(in srgb, var(--border) 50%, white) 50%,
+      var(--border) 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: var(--radius-md);
+
+    &.skeleton-breadcrumb {
+      width: 180px;
+      height: 16px;
+    }
+
+    &.skeleton-badge {
+      width: 120px;
+      height: 24px;
+      border-radius: var(--radius-full);
+    }
+
+    &.skeleton-title {
+      width: 60%;
+      height: 40px;
+    }
+
+    &.skeleton-viewer {
+      width: 100%;
+      height: 600px;
+      border-radius: var(--radius-2xl);
+    }
+  }
+}
+
+.detail-error-state {
+  text-align: center;
+  padding: 80px var(--space-6);
+  border: var(--border-width) dashed var(--border);
+  border-radius: var(--radius-3xl);
+  background: var(--linen);
+  max-width: 520px;
+  margin: 40px auto;
+
+  h2 {
+    font: 600 26px var(--serif);
+    margin: var(--space-4) 0 var(--space-2);
+    color: var(--ink);
+  }
+
+  p {
+    color: var(--slate);
+    font-size: var(--text-base);
+    margin: 0 0 var(--space-6);
+  }
+}
+
+.dark {
+  .detail-crumbs,
+  .hero-tag,
+  .stat-pill,
+  .sidebar-card,
+  .detail-card,
+  .share-button,
+  .detail-error-state {
+    background: #182229;
+    border-color: #273742;
+    color: #e5edf2;
+  }
+
+  .hero-tag,
+  .stat-pill,
+  .detail-crumbs,
+  .back-breadcrumb,
+  .share-button {
+    color: #9cb2c0;
+  }
+
+  .crumb-current {
+    color: #f0f5f8;
+  }
+
+  .hero-title,
+  .detail-card .card-heading h2 {
+    color: #f3f7fa;
+  }
+
+  .authenticity-stamp {
+    background: color-mix(in srgb, #2e7d32 20%, #182229);
+    border-color: color-mix(in srgb, #2e7d32 40%, transparent);
+    color: #66bb6a;
+  }
+
+  .advice-item p,
+  .spec-row dt,
+  .spec-sub {
+    color: #9cb2c0;
+  }
+
+  .spec-row strong {
+    color: #f3f7fa;
+  }
+
+  .spec-row {
+    border-bottom-color: #273742;
+  }
+
+  .explore-link {
+    background: #1e2b34;
+    border-color: #2c3e4c;
+    color: #f0f5f8;
+
+    &:hover {
+      border-color: var(--amber);
+      color: var(--amber);
+    }
+  }
+
+  .button-share-secondary {
+    border-color: #273742;
+    color: #9cb2c0;
+
+    &:hover {
+      color: #f0f5f8;
+      border-color: var(--amber);
+    }
+  }
+}

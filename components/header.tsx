@@ -9,42 +9,26 @@ import {
   Upload,
   House,
   LibraryBig,
+  Pin,
   Sparkle,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useStorage } from "./storage";
+import { applyTheme, getStoredTheme, type Theme } from "@/util/theme";
 
 export function SiteChrome() {
   const pathname = usePathname();
-  const [theme, setTheme] = useState<"light" | "dark" | "true-black">("light");
+  const [theme, setTheme] = useState<Theme>("light");
   const { pins } = useStorage();
 
   useEffect(() => {
-    const saved =
-      (localStorage.getItem("papyrus-theme") as
-        "light" | "dark" | "true-black") || "light";
+    const saved = getStoredTheme();
     setTheme(saved);
     applyTheme(saved);
   }, []);
 
-  function applyTheme(target: "light" | "dark" | "true-black") {
-    const root = document.documentElement;
-    if (target === "true-black") {
-      root.classList.add("dark", "true-black");
-    } else if (target === "dark") {
-      root.classList.add("dark");
-      root.classList.remove("true-black");
-    } else {
-      root.classList.remove("dark", "true-black");
-    }
-  }
-
   function cycleTheme() {
-    const order: Array<"light" | "dark" | "true-black"> = [
-      "light",
-      "dark",
-      "true-black",
-    ];
+    const order: Theme[] = ["light", "dark", "true-black"];
     const nextIdx = (order.indexOf(theme) + 1) % order.length;
     const nextTheme = order[nextIdx];
     setTheme(nextTheme);
@@ -84,7 +68,7 @@ export function SiteChrome() {
           className={pathname.startsWith("/pins") ? "active" : ""}
           href="/pins"
         >
-          <Sparkle size={14} />
+          <Pin size={14} />
           <span>Pins</span>
           <b className="pin-count">{pins.length || ""}</b>
         </Link>

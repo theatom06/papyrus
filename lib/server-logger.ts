@@ -13,7 +13,9 @@ const file = Bun.file(logPath);
 const writer = file.writer({ highWaterMark: 1024 * 1024 });
 
 export default async function log(message: string, details: LogEntry = {}) {
-  writer.write(`${new Date().toISOString()} [-] ${message} [-] ${JSON.stringify(details)}\n`);
+  writer.write(
+    `${new Date().toISOString()} [-] ${message} [-] ${JSON.stringify(details)}\n`,
+  );
 }
 
 process.once("beforeExit", async () => {

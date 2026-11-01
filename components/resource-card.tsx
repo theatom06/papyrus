@@ -24,6 +24,7 @@ export function ResourceCard({ resource }: { resource: Resource }) {
           <span>{resource.board}</span>
           <span>{resource.read} read</span>
           <span>{resource.downloads} downloads</span>
+          <span>{(resource.score * 100).toFixed(2)}% score</span>
         </div>
         <div className="card-subject-row">
           <span className="subject-chip">{resource.subject}</span>

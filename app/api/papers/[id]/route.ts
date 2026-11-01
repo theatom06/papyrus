@@ -21,7 +21,7 @@ export async function GET(
     const denied = await requireAdmin(request);
     if (denied) return denied;
   }
-  
+
   const paper = await getPaper(id, admin);
   if (!paper)
     return NextResponse.json({ error: "Paper not found." }, { status: 404 });

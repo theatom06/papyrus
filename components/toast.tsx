@@ -53,18 +53,17 @@ let globalAddToast:
   | null = null;
 
 export const toast = {
-  success(message: string, title?: string) {
-    if (globalAddToast) globalAddToast({ message, title, type: "success" });
-  },
-  error(message: string, title?: string) {
-    if (globalAddToast) globalAddToast({ message, title, type: "error" });
-  },
-  info(message: string, title?: string) {
-    if (globalAddToast) globalAddToast({ message, title, type: "info" });
-  },
-  warning(message: string, title?: string) {
-    if (globalAddToast) globalAddToast({ message, title, type: "warning" });
-  },
+  success: (message: string, title?: string) =>
+    globalAddToast?.({ message, title, type: "success" }),
+
+  error: (message: string, title?: string) =>
+    globalAddToast?.({ message, title, type: "error" }),
+
+  info: (message: string, title?: string) =>
+    globalAddToast?.({ message, title, type: "info" }),
+
+  warning: (message: string, title?: string) =>
+    globalAddToast?.({ message, title, type: "warning" }),
 };
 
 export function ToastProvider({ children }: { children: React.ReactNode }) {

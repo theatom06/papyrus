@@ -2,6 +2,7 @@
 
 import "@/app/admin/style.css";
 import "@/app/paper/[id]/style.css";
+import "./style.css";
 
 import { useEffect, useState, useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
@@ -11,20 +12,13 @@ import {
   Check,
   Download,
   ExternalLink,
-  FileText,
   Save,
   Trash2,
   X,
   Sun,
   Moon,
   ShieldCheck,
-  Clock,
-  Calendar,
-  Layers,
-  GraduationCap,
   BookOpen,
-  AlertTriangle,
-  Flag,
   ThumbsUp,
   ThumbsDown,
   CheckCircle2,
@@ -34,6 +28,13 @@ import { Dropdown } from "@/components/dropdown";
 import { PdfViewer } from "@/components/pdf-viewer";
 import { Modal } from "@/components/modal";
 import { useToast } from "@/components/toast";
+import { formatDate, formatFileSize } from "@/util/format";
+import {
+  applyTheme,
+  getStoredTheme,
+  nextTheme,
+  type Theme,
+} from "@/util/theme";
 
 type PaperDetail = {
   id: string;
@@ -87,28 +88,6 @@ type PaperReport = {
   created_at: string;
 };
 
-function formatFileSize(bytes?: number): string {
-  if (!bytes || bytes <= 0) return "PDF document";
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-}
-
-function formatDate(isoString?: string): string {
-  if (!isoString) return "Recent";
-  try {
-    const date = new Date(isoString);
-    if (isNaN(date.getTime())) return "Recent";
-    return date.toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    });
-  } catch {
-    return "Recent";
-  }
-}
-
 export default function AdminPaperPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
@@ -118,13 +97,13 @@ export default function AdminPaperPage() {
   const [boards, setBoards] = useState<BoardOption[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [dark, setDark] = useState(false);
+  const [theme, setTheme] = useState<Theme>("light");
   const [showUnsavedModal, setShowUnsavedModal] = useState(false);
   const [pendingNav, setPendingNav] = useState<string | null>(null);
 
   // User Reports & Reviews state
   const [reports, setReports] = useState<PaperReport[]>([]);
-  const [reportsLoading, setReportsLoading] = useState(false);
+  const reportsLoading = false;
 
   // Form states
   const [title, setTitle] = useState("");
@@ -162,9 +141,9 @@ export default function AdminPaperPage() {
     duration !== savedDuration;
 
   useEffect(() => {
-    const saved = localStorage.getItem("papyrus-admin-theme") === "dark";
-    setDark(saved);
-    document.documentElement.classList.toggle("admin-dark", saved);
+    const saved = getStoredTheme();
+    setTheme(saved);
+    applyTheme(saved);
 
     Promise.all([
       apiRequest<{ paper?: PaperDetail }>(`/api/papers/${id}?scope=admin`),
@@ -214,19 +193,11 @@ export default function AdminPaperPage() {
       .finally(() => setLoading(false));
   }, [id]);
 
-  function toggleDarkMode() {
-    const next = !dark;
-    setDark(next);
-    document.documentElement.classList.toggle("admin-dark", next);
-    localStorage.setItem("papyrus-admin-theme", next ? "dark" : "light");
-  }
-
-  function loadReports() {
-    setReportsLoading(true);
-    apiRequest<{ reports?: PaperReport[] }>(`/api/reports?paperId=${id}`)
-      .then((data) => setReports(data.reports || []))
-      .catch(() => {})
-      .finally(() => setReportsLoading(false));
+  function toggleTheme() {
+    const next = nextTheme(theme);
+    setTheme(next);
+    applyTheme(next);
+    localStorage.setItem("papyrus-theme", next);
   }
 
   async function resolveReport(reportId: number) {
@@ -422,7 +393,6 @@ export default function AdminPaperPage() {
 
   const previewUrl = `/api/papers/${paper.id}/download?scope=admin&preview=1`;
   const downloadUrl = `/api/papers/${paper.id}/download?scope=admin`;
-  const accentColor = paper.accent_color || "#c97732";
 
   return (
     <div className="admin-app" style={{ display: "block", minHeight: "100vh" }}>
@@ -505,10 +475,10 @@ export default function AdminPaperPage() {
           <button
             type="button"
             className="icon-button"
-            onClick={toggleDarkMode}
+            onClick={toggleTheme}
             aria-label="Toggle dark mode"
           >
-            {dark ? <Sun size={17} /> : <Moon size={17} />}
+            {theme === "light" ? <Moon size={17} /> : <Sun size={17} />}
           </button>
         </div>
       </header>
@@ -1209,7 +1179,13 @@ export default function AdminPaperPage() {
                 </div>
                 <div className="spec-row">
                   <dt>Catalogued</dt>
-                  <dd>{formatDate(paper.created_at)}</dd>
+                  <dd>
+                    {formatDate(paper.created_at, {
+                      month: "short",
+                      day: "numeric",
+                      year: "numeric",
+                    })}
+                  </dd>
                 </div>
               </dl>
 

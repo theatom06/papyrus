@@ -9,27 +9,27 @@
     box-shadow: 0 20px 60px #35271912;
   }
 
-  & form {
+  form {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0 20px;
+    gap: 0 var(--space-5);
 
-    & label {
+    label {
       display: block;
       margin: 18px 0;
-      font-size: 11px;
+      font-size: var(--text-sm);
       font-weight: 700;
     }
 
-    & input,
-    & select,
-    & textarea {
+    input,
+    select,
+    textarea {
       display: block;
       width: 100%;
-      padding: 12px;
-      margin-top: 8px;
-      border: 1px solid var(--border);
-      border-radius: 8px;
+      padding: var(--space-3);
+      margin-top: var(--space-2);
+      border: var(--border-width) solid var(--border);
+      border-radius: var(--radius-md);
       background: var(--sand);
       color: var(--ink);
       font: inherit;
@@ -41,32 +41,32 @@
       }
     }
 
-    & textarea {
+    textarea {
       min-height: 112px;
       resize: vertical;
       line-height: 1.55;
       transition:
-        border-color 160ms ease,
-        box-shadow 160ms ease;
+        border-color var(--transition-fast),
+        box-shadow var(--transition-fast);
     }
 
-    & label:nth-of-type(1),
-    & label:nth-of-type(2),
-    & label:nth-last-of-type(1),
-    & .upload-error,
-    & button,
-    & [role="status"] {
+    label:nth-of-type(1),
+    label:nth-of-type(2),
+    label:nth-last-of-type(1),
+    .upload-error,
+    button,
+    [role="status"] {
       grid-column: 1 / -1;
     }
   }
-}
 
-.upload .dropdown {
-  margin-top: 8px;
-}
+  .dropdown {
+    margin-top: var(--space-2);
 
-.upload .dropdown-label {
-  display: none;
+    .dropdown-label {
+      display: none;
+    }
+  }
 }
 
 .custom-field {
@@ -83,12 +83,13 @@
 }
 
 .upload-error {
-  padding: 12px 14px;
-  border: 1px solid color-mix(in srgb, #b04c3d 35%, var(--border));
-  border-radius: 8px;
-  background: color-mix(in srgb, #b04c3d 8%, var(--sand));
-  color: #9d3e32;
-  font-size: 11px;
+  padding: var(--space-3) 14px;
+  border: var(--border-width) solid
+    color-mix(in srgb, var(--status-danger) 35%, var(--border));
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--status-danger) 8%, var(--sand));
+  color: var(--status-danger);
+  font-size: var(--text-sm);
   line-height: 1.5;
 }
 
@@ -111,23 +112,26 @@
   gap: 7px;
   width: 100%;
   padding: 25px 18px;
-  margin-top: 8px;
-  border: 1px dashed var(--border);
-  border-radius: 10px;
+  margin-top: var(--space-2);
+  border: var(--border-width) dashed var(--border);
+  border-radius: var(--radius-lg);
   background: var(--sand);
   color: var(--slate);
   cursor: pointer;
+  transition:
+    border-color var(--transition-fast),
+    background var(--transition-fast);
 
-  & span {
+  span {
     color: var(--ink);
     font-size: 12px;
   }
 
-  & small {
-    font-size: 10px;
+  small {
+    font-size: var(--text-xs);
   }
 
-  & input {
+  input {
     position: absolute;
     width: 1px;
     height: 1px;

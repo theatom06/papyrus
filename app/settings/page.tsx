@@ -10,6 +10,7 @@ import { PageTitle } from "@/components/page-title";
 import { SettingsCard } from "./components/settings-card";
 import { useToast } from "@/components/toast";
 import { apiRequest } from "@/lib/api-client";
+import { applyTheme, getStoredTheme, type Theme } from "@/util/theme";
 
 type BoardOption = {
   id: number;
@@ -19,19 +20,15 @@ type BoardOption = {
 
 export default function SettingsPage() {
   const { showToast } = useToast();
-  const [theme, setThemeState] = useState<"light" | "dark" | "true-black">(
-    "light",
-  );
+  const [theme, setThemeState] = useState<Theme>("light");
   const [defaultView, setDefaultView] = useState("home");
   const [defaultBoard, setDefaultBoard] = useState("");
   const [boards, setBoards] = useState<BoardOption[]>([]);
 
   useEffect(() => {
-    const savedTheme =
-      (localStorage.getItem("papyrus-theme") as
-        "light" | "dark" | "true-black") || "light";
+    const savedTheme = getStoredTheme();
     setThemeState(savedTheme);
-    applyThemeClass(savedTheme);
+    applyTheme(savedTheme);
 
     const savedView = localStorage.getItem("papyrus-default-view") || "home";
     setDefaultView(savedView);
@@ -58,21 +55,9 @@ export default function SettingsPage() {
       });
   }, []);
 
-  function applyThemeClass(val: "light" | "dark" | "true-black") {
-    const root = document.documentElement;
-    if (val === "true-black") {
-      root.classList.add("dark", "true-black");
-    } else if (val === "dark") {
-      root.classList.add("dark");
-      root.classList.remove("true-black");
-    } else {
-      root.classList.remove("dark", "true-black");
-    }
-  }
-
-  function handleThemeChange(val: "light" | "dark" | "true-black") {
+  function handleThemeChange(val: Theme) {
     setThemeState(val);
-    applyThemeClass(val);
+    applyTheme(val);
     localStorage.setItem("papyrus-theme", val);
     showToast(
       `Theme updated to ${

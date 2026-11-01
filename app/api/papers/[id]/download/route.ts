@@ -14,7 +14,9 @@ export async function GET(
   const { id } = await context.params;
   await log("paper.download_requested", { paperId: id });
 
-  const admin = new URL(request.url).searchParams.get("scope") === "admin";
+  const params = new URL(request.url).searchParams;
+
+  const admin = params.get("scope") === "admin";
 
   if (admin) {
     const denied = await requireAdmin(request);
@@ -31,8 +33,11 @@ export async function GET(
     return NextResponse.json({ error: "Paper not found." }, { status: 404 });
   try {
     const fileUrl = await getFileUrl(paper.file_id, paper.file_name);
-    await incrementDownloads(id);
-    
+
+    if (!params.get("preview")) {
+      await incrementDownloads(id);
+    }
+
     return NextResponse.redirect(fileUrl);
   } catch (error) {
     await log("paper.download_failed", {
