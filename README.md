@@ -4,7 +4,7 @@ Papyrus is a student-focused archive for finding, viewing, rating, reporting,
 and contributing exam papers. It is a single Next.js application with a
 server-side SQLite catalog and Hack Club CDN file storage.
 
-Live demo: <https://papyrus.steve.hackclub.app>
+Live demo: <https://papyrus-hc.vercel.app>
 
 ## Vision/Motivation
 
@@ -166,6 +166,7 @@ process-local, so it does not coordinate across multiple instances.
 | `DB_PATH` | SQLite database path | `papyrus.sqlite` |
 | `SERVER_LOG_PATH` | Directory for server logs | `./logs/server` |
 | `ADMIN_LOG_PATH` | Directory for admin logs | `./logs/admin` |
+| `NOLOGS` | Disable logging | Optional |
 
 ## Storage and privacy
 

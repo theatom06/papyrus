@@ -3,7 +3,7 @@ import path from "node:path";
 
 type LogEntry = Record<string, boolean | number | string | null>;
 
-let log;
+let log: (message: string, details?: LogEntry) => void;
 
 if(!process.env.NOLOGS) {
   const dirPath =
