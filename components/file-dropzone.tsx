@@ -37,7 +37,11 @@ export function FileDropzone({
 
   return (
     <button
-      className={`file-dropzone${dragging ? " is-dragging" : ""}`}
+      className={`flex min-h-32 w-full flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed px-5 py-8 text-center transition cursor-pointer ${
+        dragging
+          ? "border-amber bg-amber/10 text-amber"
+          : "border-border-main bg-linen/50 text-slate hover:border-amber hover:text-amber"
+      }`}
       type="button"
       onClick={() => inputRef.current?.click()}
       onDragEnter={(event) => {
@@ -48,9 +52,13 @@ export function FileDropzone({
       onDragLeave={() => setDragging(false)}
       onDrop={handleDrop}
     >
-      <UploadCloud size={22} aria-hidden="true" />
-      <span>{fileName || "Drop a PDF here or choose a file"}</span>
-      <small>{fileName ? "Ready to upload" : "PDF files only"}</small>
+      <UploadCloud size={28} className={fileName ? "text-amber" : "text-slate"} aria-hidden="true" />
+      <span className="text-sm font-medium text-ink">
+        {fileName || "Drag & drop a PDF here, or click to browse"}
+      </span>
+      <span className="text-xs text-slate">
+        {fileName ? "Ready to upload" : "PDF files up to 25MB supported"}
+      </span>
       <input
         ref={inputRef}
         name={name}
@@ -58,8 +66,10 @@ export function FileDropzone({
         accept={accept}
         required={required}
         onChange={(event) => selectFile(event.target.files?.[0])}
-        tabIndex={-1}
+        className="hidden"
       />
     </button>
   );
 }
+
+export default FileDropzone;

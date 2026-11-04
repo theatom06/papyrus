@@ -5,7 +5,7 @@ type LogEntry = Record<string, boolean | number | string | null>;
 
 let log: (message: string, details?: LogEntry) => void;
 
-if(!process.env.NOLOGS) {
+if (!process.env.NOLOGS) {
   const dirPath =
     process.env.SERVER_LOG_PATH || path.join(process.cwd(), "logs", "server");
   const logPath = path.join(dirPath, `${Bun.randomUUIDv7()}.log`);
@@ -19,14 +19,16 @@ if(!process.env.NOLOGS) {
     writer.write(
       `${new Date().toISOString()} [-] ${message} [-] ${JSON.stringify(details)}\n`,
     );
-  }
+  };
 
   process.once("beforeExit", async () => {
     await writer.flush();
   });
 } else {
   log = (message: string, details: LogEntry = {}) => {
-    console.log(`${new Date().toISOString()} [-] ${message} [-] ${JSON.stringify(details)}`);
+    console.log(
+      `${new Date().toISOString()} [-] ${message} [-] ${JSON.stringify(details)}`,
+    );
   };
 }
 

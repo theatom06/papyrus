@@ -1,7 +1,5 @@
 "use client";
 
-import "./style.css";
-
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -14,7 +12,7 @@ import {
   MoreHorizontal,
   ShieldCheck,
 } from "lucide-react";
-import { AdminShell } from "./components/admin-shell";
+import AdminShell from "./components/admin-shell";
 import { apiRequest } from "@/lib/api-client";
 import { useToast } from "@/components/toast";
 import type { Paper, PaperReport } from "./components/types";
@@ -114,59 +112,86 @@ export default function AdminOverviewPage() {
         poorCount,
       }}
     >
-      <div className="dashboard-content">
-        <div className="welcome-row">
+      <div className="mx-auto w-full max-w-[1035px] px-5 pb-24 pt-8 sm:px-[4.5vw]">
+        <div className="mb-5">
           <div>
-            <div className="eyebrow">{formattedDate}</div>
-            <h2>
-              Welcome back, Steve <span>✦</span>
+            <div className="font-mono text-[9px] uppercase tracking-[0.12em] text-amber">
+              {formattedDate}
+            </div>
+            <h2 className="mt-2 font-[Georgia] text-[28px] tracking-[-0.04em]">
+              Welcome back, Steve{" "}
+              <span className="text-lg text-amber">✦</span>
             </h2>
-            <p>
+            <p className="mt-1 text-xs text-slate">
               Manage examinations, moderation queue, user audit reports, and
               curriculum structures.
             </p>
           </div>
         </div>
 
-        <div className="stats-grid">
-          <div className="stat-card">
-            <div className="stat-icon amber">
+        <div className="mb-[22px] grid grid-cols-1 gap-2 sm:grid-cols-2 xl:grid-cols-4">
+          <div className="min-h-[141px] rounded-md border border-border-main bg-linen p-4">
+            <div className="grid size-[30px] place-items-center rounded-md bg-amber/10 text-amber">
               <BookOpen size={18} />
             </div>
-            <div className="stat-label">Total Papers</div>
-            <strong>{loading ? "…" : papers.length.toLocaleString()}</strong>
-            <small>{approvedCount} active in archive</small>
+            <div className="mt-2.5 font-mono text-[9px] uppercase tracking-[0.12em] text-slate">
+              Total Papers
+            </div>
+            <strong className="mt-2 block font-[Georgia] text-[26px] leading-none">
+              {loading ? "…" : papers.length.toLocaleString()}
+            </strong>
+            <small className="mt-3 block font-mono text-[9px] text-amber">
+              {approvedCount} active in archive
+            </small>
           </div>
 
-          <div className="stat-card">
-            <div className="stat-icon blue">
+          <div className="min-h-[141px] rounded-md border border-border-main bg-linen p-4">
+            <div className="grid size-[30px] place-items-center rounded-md bg-sky-500/10 text-sky-600 dark:text-sky-400">
               <BarChart3 size={18} />
             </div>
-            <div className="stat-label">Total Downloads</div>
-            <strong>{loading ? "…" : totalDownloads.toLocaleString()}</strong>
-            <small>Public student access</small>
+            <div className="mt-2.5 font-mono text-[9px] uppercase tracking-[0.12em] text-slate">
+              Total Downloads
+            </div>
+            <strong className="mt-2 block font-[Georgia] text-[26px] leading-none">
+              {loading ? "…" : totalDownloads.toLocaleString()}
+            </strong>
+            <small className="mt-3 block font-mono text-[9px] text-amber">
+              Public student access
+            </small>
           </div>
 
-          <div className="stat-card">
-            <div className="stat-icon rose">
+          <div className="min-h-[141px] rounded-md border border-border-main bg-linen p-4">
+            <div className="grid size-[30px] place-items-center rounded-md bg-rose-500/10 text-rose-600 dark:text-rose-400">
               <ShieldCheck size={18} />
             </div>
-            <div className="stat-label">Awaiting Review</div>
-            <strong>{loading ? "…" : String(reviewCount)}</strong>
-            <small className={reviewCount > 0 ? "attention" : ""}>
+            <div className="mt-2.5 font-mono text-[9px] uppercase tracking-[0.12em] text-slate">
+              Awaiting Review
+            </div>
+            <strong className="mt-2 block font-[Georgia] text-[26px] leading-none">
+              {loading ? "…" : String(reviewCount)}
+            </strong>
+            <small
+              className={`mt-3 block font-mono text-[9px] ${reviewCount > 0 ? "text-rose-600 dark:text-rose-400" : "text-amber"}`}
+            >
               {reviewCount > 0 ? "Pending moderation" : "All caught up"}
             </small>
           </div>
 
-          <div className="stat-card">
+          <div className="min-h-[141px] rounded-md border border-border-main bg-linen p-4">
             <div
-              className={`stat-icon ${pendingReportCount > 0 ? "rose" : "amber"}`}
+              className={`grid size-[30px] place-items-center rounded-md ${pendingReportCount > 0 ? "bg-rose-500/10 text-rose-600 dark:text-rose-400" : "bg-amber/10 text-amber"}`}
             >
               <Flag size={18} />
             </div>
-            <div className="stat-label">Pending Reports</div>
-            <strong>{loading ? "…" : String(pendingReportCount)}</strong>
-            <small className={pendingReportCount > 0 ? "attention" : ""}>
+            <div className="mt-2.5 font-mono text-[9px] uppercase tracking-[0.12em] text-slate">
+              Pending Reports
+            </div>
+            <strong className="mt-2 block font-[Georgia] text-[26px] leading-none">
+              {loading ? "…" : String(pendingReportCount)}
+            </strong>
+            <small
+              className={`mt-3 block font-mono text-[9px] ${pendingReportCount > 0 ? "text-rose-600 dark:text-rose-400" : "text-amber"}`}
+            >
               {pendingReportCount > 0
                 ? "User issue reports"
                 : "No open reports"}
@@ -174,21 +199,28 @@ export default function AdminOverviewPage() {
           </div>
         </div>
 
-        <div className="dashboard-columns">
-          <section className="panel">
-            <div className="panel-heading">
+        <div className="grid grid-cols-1 gap-3 xl:grid-cols-2">
+          <section className="rounded-md border border-border-main bg-linen p-5">
+            <div className="mb-3.5 flex items-start justify-between gap-3">
               <div>
-                <div className="eyebrow">ACTION NEEDED</div>
-                <h3>Moderation Queue</h3>
+                <div className="font-mono text-[9px] uppercase tracking-[0.12em] text-amber">
+                  ACTION NEEDED
+                </div>
+                <h3 className="mt-1.5 font-[Georgia] text-[17px]">
+                  Moderation Queue
+                </h3>
               </div>
-              <Link href="/admin/review" className="text-button">
+              <Link
+                href="/admin/review"
+                className="inline-flex items-center gap-1 text-xs text-ink hover:text-amber"
+              >
                 View all <ArrowRight size={14} />
               </Link>
             </div>
 
             {loading ? (
               <p
-                className="panel-empty"
+                className="p-6 text-center text-sm text-slate"
                 style={{
                   padding: 24,
                   textAlign: "center",
@@ -202,17 +234,21 @@ export default function AdminOverviewPage() {
                 .filter((p) => p.status === "review")
                 .slice(0, 5)
                 .map((paper) => (
-                  <div className="review-row" key={paper.id}>
-                    <div className="file-icon">
+                  <div
+                    className="flex min-h-12 items-center gap-2.5 border-t border-border-main"
+                    key={paper.id}
+                  >
+                    <div className="grid size-[30px] place-items-center rounded-md bg-amber/10 text-amber">
                       <BookOpen size={16} />
                     </div>
                     <div
-                      className="review-details"
-                      style={{ cursor: "pointer" }}
+                      className="min-w-0 flex-1 cursor-pointer"
                       onClick={() => router.push(`/admin/papers/${paper.id}`)}
                     >
-                      <strong>{paper.title}</strong>
-                      <small>
+                      <strong className="block truncate text-xs">
+                        {paper.title}
+                      </strong>
+                      <small className="mt-0.5 block truncate text-[10px] text-slate">
                         {paper.subject} · {paper.board} · {paper.year}
                         {paper.contributorEmail
                           ? ` · ${paper.contributorEmail}`
@@ -221,7 +257,7 @@ export default function AdminOverviewPage() {
                     </div>
                     <button
                       type="button"
-                      className="approve-button"
+                      className="inline-flex items-center gap-1 rounded border border-emerald-600/30 px-2 py-1.5 text-[10px] text-emerald-600 hover:bg-emerald-500/10 dark:text-emerald-400"
                       onClick={() => quickApprove(paper.id)}
                       title="Approve and make visible"
                     >
@@ -229,7 +265,7 @@ export default function AdminOverviewPage() {
                     </button>
                     <button
                       type="button"
-                      className="icon-button"
+                      className="grid size-7 place-items-center rounded-md border border-border-main text-slate hover:border-amber hover:text-amber"
                       onClick={() => router.push(`/admin/papers/${paper.id}`)}
                       aria-label={`Inspect ${paper.title}`}
                       title="Inspect paper in studio"
@@ -239,20 +275,27 @@ export default function AdminOverviewPage() {
                   </div>
                 ))
             ) : (
-              <div className="queue-empty">
+              <div className="flex items-center gap-2 rounded border border-emerald-600/30 bg-emerald-500/10 px-3 py-2 text-[11px] text-emerald-600 dark:text-emerald-400">
                 <Check size={16} /> All caught up, review queue is clear!
               </div>
             )}
           </section>
 
-          <section className="panel recent-panel" style={{ marginTop: 0 }}>
-            <div className="panel-heading">
+          <section className="rounded-md border border-border-main bg-linen p-5">
+            <div className="mb-3.5 flex items-start justify-between gap-3">
               <div>
-                <div className="eyebrow">QUALITY MONITOR</div>
-                <h3>Attention Required</h3>
+                <div className="font-mono text-[9px] uppercase tracking-[0.12em] text-amber">
+                  QUALITY MONITOR
+                </div>
+                <h3 className="mt-1.5 font-[Georgia] text-[17px]">
+                  Attention Required
+                </h3>
               </div>
               {poorCount > 0 && (
-                <Link href="/admin/poor-performing" className="text-button">
+                <Link
+                  href="/admin/poor-performing"
+                  className="inline-flex items-center gap-1 text-xs text-ink hover:text-amber"
+                >
                   View all ({poorCount}) <ArrowRight size={14} />
                 </Link>
               )}
@@ -262,52 +305,56 @@ export default function AdminOverviewPage() {
               {pendingReportCount > 0 ? (
                 <Link
                   href="/admin/reports"
-                  className="recent-item"
+                  className="flex min-h-12 items-center gap-2.5 border-t border-border-main border-l-[3px] pl-2.5 no-underline"
                   style={{
                     textDecoration: "none",
-                    borderLeft: "3px solid #b04c3d",
+                    borderLeft: "3px solid var(--amber-dark)",
                   }}
                 >
-                  <div className="file-icon" style={{ color: "#b04c3d" }}>
+                  <div className="grid size-[30px] place-items-center rounded-md bg-rose-500/10 text-rose-600 dark:text-rose-400">
                     <Flag size={16} />
                   </div>
                   <div>
-                    <strong>
+                    <strong className="block text-xs">
                       {pendingReportCount} Paper{" "}
                       {pendingReportCount === 1 ? "Report" : "Reports"}
                     </strong>
-                    <small>
+                    <small className="mt-0.5 block text-[10px] text-slate">
                       Students reported issues with archive materials
                     </small>
                   </div>
-                  <span className="status review">Needs action</span>
+                  <span className="rounded-full border border-rose-600/30 px-2 py-1 font-mono text-[9px] uppercase text-rose-600 dark:text-rose-400">
+                    Needs action
+                  </span>
                 </Link>
               ) : null}
 
               {papers.slice(0, 4).map((paper) => (
                 <div
-                  className="recent-item"
+                  className="flex min-h-12 cursor-pointer items-center gap-2.5 border-t border-border-main"
                   key={paper.id}
                   style={{ cursor: "pointer" }}
                   onClick={() => router.push(`/admin/papers/${paper.id}`)}
                 >
-                  <div className="file-icon">
+                  <div className="grid size-[30px] place-items-center rounded-md bg-amber/10 text-amber">
                     <BookOpen size={16} />
                   </div>
                   <div>
-                    <strong>{paper.title}</strong>
-                    <small>
+                    <strong className="block truncate text-xs">
+                      {paper.title}
+                    </strong>
+                    <small className="mt-0.5 block truncate text-[10px] text-slate">
                       {paper.subject} · {paper.board} · {paper.year}
                     </small>
                   </div>
                   <span
-                    className={`status ${paper.status === "approved" ? "published" : paper.status}`}
+                    className={`rounded-full border px-2 py-1 font-mono text-[9px] uppercase ${paper.status === "approved" ? "border-emerald-600/30 text-emerald-600 dark:text-emerald-400" : "border-amber/40 bg-amber/10 text-amber"}`}
                   >
                     {paper.status.replace("_", " ")}
                   </span>
                   <button
                     type="button"
-                    className="icon-button"
+                    className="grid size-7 place-items-center rounded-md border border-border-main text-slate hover:border-amber hover:text-amber"
                     onClick={(e) => {
                       e.stopPropagation();
                       router.push(`/admin/papers/${paper.id}`);

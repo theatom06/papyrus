@@ -22,25 +22,37 @@ export function Modal({
 
   return (
     <div
-      className={`modal-backdrop modal-${variant}`}
+      className="fixed inset-0 z-50 grid place-items-center bg-black/60 backdrop-blur-xs p-4 sm:p-6"
       role="presentation"
       onMouseDown={(event) => {
         if (event.target === event.currentTarget) onClose();
       }}
     >
       <section
-        className="modal"
+        className={`max-h-[90vh] w-full overflow-y-auto rounded-xl border border-border-main bg-linen p-5 text-ink shadow-2xl sm:p-6 ${
+          variant === "wide" ? "max-w-3xl" : variant === "form" ? "max-w-xl" : "max-w-md"
+        }`}
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
       >
-        <header>
+        <header className="mb-4 flex items-start justify-between gap-4 border-b border-border-main/70 pb-3">
           <div>
-            {eyebrow && <div className="eyebrow">{eyebrow}</div>}
-            <h2 id={titleId}>{title}</h2>
+            {eyebrow && (
+              <span className="block font-mono text-[10px] font-semibold uppercase tracking-wider text-amber">
+                {eyebrow}
+              </span>
+            )}
+            <h2 className="mt-0.5 font-serif text-lg font-bold text-ink" id={titleId}>
+              {title}
+            </h2>
           </div>
-          <button className="icon-button" onClick={onClose} aria-label="Close">
-            <X size={18} />
+          <button
+            className="grid size-7 place-items-center rounded-md border border-border-main text-slate hover:border-amber hover:text-amber cursor-pointer transition"
+            onClick={onClose}
+            aria-label="Close"
+          >
+            <X size={15} />
           </button>
         </header>
         {children}
@@ -48,3 +60,5 @@ export function Modal({
     </div>
   );
 }
+
+export default Modal;

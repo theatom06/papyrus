@@ -4,6 +4,7 @@ const nextConfig = {
   experimental: {
     proxyClientMaxBodySize: "25mb",
   },
+  allowedDevOrigins: ["127.0.0.1"],
   redirects: async () => [
     {
       source: "/p/:slug",

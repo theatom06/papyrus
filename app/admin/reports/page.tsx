@@ -1,12 +1,9 @@
 "use client";
 
-import "@/app/admin/style.css";
-import "./style.css";
-
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Check, Flag, Settings2, X } from "lucide-react";
-import { AdminShell } from "../components/admin-shell";
+import AdminShell from "../components/admin-shell";
 import { apiRequest } from "@/lib/api-client";
 import { useToast } from "@/components/toast";
 import type { PaperReport } from "../components/types";
@@ -74,9 +71,9 @@ export default function AdminReportsPage() {
       <div className="dashboard-content">
         <div className="view-heading">
           <div>
-            <div className="eyebrow">USER FEEDBACK & AUDIT</div>
-            <h2>
-              Paper Reports <span className="count-pill">{reports.length}</span>
+            <div className="font-mono text-[9px] uppercase tracking-[0.12em] text-amber">USER FEEDBACK & AUDIT</div>
+            <h2 className="mt-2 font-serif text-[29px] tracking-[-0.035em]">
+              Paper Reports <span className="ml-1 inline-flex rounded-full border border-amber/40 bg-amber/10 px-2 py-0.5 align-middle font-mono text-[10px] text-amber">{reports.length}</span>
             </h2>
             <p>
               Reports submitted by students and teachers regarding content
@@ -93,34 +90,34 @@ export default function AdminReportsPage() {
             Loading reports…
           </p>
         ) : reports.length ? (
-          <div className="reports-list">
+          <div className="grid gap-4">
             {reports.map((report) => (
-              <div className="report-card" key={report.id}>
-                <div className="report-header">
-                  <div className="report-title-area">
-                    <span className={`report-badge ${report.status}`}>
+              <div className="rounded-lg border border-border-main bg-linen p-5 shadow-sm" key={report.id}>
+                <div className="flex flex-wrap items-start justify-between gap-4">
+                  <div className="min-w-0">
+                    <span
+                      className={`inline-flex w-fit rounded-full border px-2 py-1 font-mono text-[9px] uppercase ${
+                        report.status === "pending"
+                          ? "border-amber/40 bg-amber/10 text-amber"
+                          : "border-emerald-600/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+                      }`}
+                    >
                       {report.status}
                     </span>
                     <h3
-                      style={{ cursor: "pointer" }}
+                      className="mt-2 cursor-pointer font-serif text-lg font-semibold hover:text-amber"
                       onClick={() =>
                         router.push(`/admin/papers/${report.paper_id}`)
                       }
                     >
                       {report.paper_title}
                     </h3>
-                    <small
-                      style={{
-                        color: "var(--slate)",
-                        fontFamily: "var(--mono)",
-                        fontSize: 11,
-                      }}
-                    >
+                    <small className="mt-1 block font-mono text-[11px] text-slate">
                       {report.subject_name} · {report.board_code} ·{" "}
                       {report.class_level} · {report.paper_year}
                     </small>
                   </div>
-                  <div className="report-actions">
+                  <div className="flex flex-wrap gap-2">
                     <button
                       type="button"
                       className="button button-secondary"
@@ -154,12 +151,12 @@ export default function AdminReportsPage() {
                   </div>
                 </div>
 
-                <div className="report-reason-box">
+                <div className="mt-4 rounded-md border border-border-main bg-sand p-3 text-sm text-ink">
                   <strong>Reported issue: {report.reason}</strong>
                   {report.details && <p>{report.details}</p>}
                 </div>
 
-                <div className="report-footer">
+                <div className="mt-4 flex flex-wrap justify-between gap-2 border-t border-border-main pt-3 text-xs text-slate">
                   <span>
                     {report.reporter_email
                       ? `Submitted by: ${report.reporter_email}`

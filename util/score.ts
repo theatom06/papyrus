@@ -24,7 +24,8 @@ export function calculateScore(
 
   // Part 2: Engagement Weight (Logarithmic diminishing returns scale)
   // This ensures that papers with more votes are rewarded, but the effect diminishes as the number of votes increases. It is sacaled down to ensure that the engagement multiplier does not overshadow the quality score.
-  const engagementMultiplier = 0.15 * Math.log10(totalVotes + 1) + 0.1 * Math.log10(downloads + 1) + 1;
+  const engagementMultiplier =
+    0.15 * Math.log10(totalVotes + 1) + 0.1 * Math.log10(downloads + 1) + 1;
 
   // Part 3: Recency Buffer (Decays to 0 over 30 days)
   // This gives a small bonus to newer papers, encouraging fresh content to surface.
@@ -39,3 +40,4 @@ export function calculateScore(
   return finalScore;
 }
 
+export default calculateScore;

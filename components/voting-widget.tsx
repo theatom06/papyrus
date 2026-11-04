@@ -1,23 +1,19 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { ThumbsUp, ThumbsDown, CheckCircle } from "lucide-react";
+import { ThumbsUp, ThumbsDown } from "lucide-react";
 import { apiRequest } from "@/lib/api-client";
 import { useToast } from "./toast";
 import { calculateScore } from "@/util/score";
 
 function getOrCreateClientId(): string {
   if (typeof window === "undefined") return "";
-  try {
-    let id = localStorage.getItem("papyrus-client-id");
-    if (!id) {
-      id = `cid-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
-      localStorage.setItem("papyrus-client-id", id);
-    }
-    return id;
-  } catch {
-    return `cid-fallback-${Date.now()}`;
+  let id = localStorage.getItem("papyrus-client-id");
+  if (!id) {
+    id = "client_" + Math.random().toString(36).substring(2, 15);
+    localStorage.setItem("papyrus-client-id", id);
   }
+  return id;
 }
 
 type VoteType = "up" | "down" | null;
@@ -32,109 +28,77 @@ export function VotingWidget({
   createdAt: string;
 }) {
   const { showToast } = useToast();
-  const [clientId, setClientId] = useState<string>("");
-  const [upvotes, setUpvotes] = useState(0);
-  const [downvotes, setDownvotes] = useState(0);
+  const [upvotes, setUpvotes] = useState<number>(0);
+  const [downvotes, setDownvotes] = useState<number>(0);
   const [userVote, setUserVote] = useState<VoteType>(null);
-  const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
-  useEffect(() => {
-    const id = getOrCreateClientId();
-    setClientId(id);
-  }, []);
-
-  const fetchVotes = useCallback(
-    async (activeClientId: string) => {
-      if (!paperId) return;
-      try {
-        const data = await apiRequest<{
-          upvotes: number;
-          downvotes: number;
-          userVote: string | null;
-        }>(
-          `/api/papers/${paperId}/vote?clientId=${encodeURIComponent(activeClientId || "")}`,
-        );
-        setUpvotes(data.upvotes ?? 0);
-        setDownvotes(data.downvotes ?? 0);
-        setUserVote((data.userVote as VoteType) || null);
-      } catch {
-        // silently fail — votes are non-critical
-      } finally {
-        setLoading(false);
-      }
-    },
-    [paperId],
-  );
-
-  useEffect(() => {
-    if (clientId) {
-      fetchVotes(clientId);
-    }
-  }, [clientId, fetchVotes]);
-
-  async function handleVote(vote: VoteType) {
-    if (submitting) return;
-    const activeClientId = clientId || getOrCreateClientId();
-    if (!activeClientId) {
-      showToast("Unable to initialize voter session.", "error");
-      return;
-    }
-
-    // Toggle: if already same vote, remove it
-    const nextVote: VoteType = userVote === vote ? null : vote;
-
-    setSubmitting(true);
-    // Optimistic update
-    const prevUp = upvotes;
-    const prevDown = downvotes;
-    const prevVote = userVote;
-
-    // Calculate new counts optimistically
-    let newUp = upvotes;
-    let newDown = downvotes;
-    if (prevVote === "up") newUp--;
-    if (prevVote === "down") newDown--;
-    if (nextVote === "up") newUp++;
-    if (nextVote === "down") newDown++;
-
-    setUpvotes(Math.max(0, newUp));
-    setDownvotes(Math.max(0, newDown));
-    setUserVote(nextVote);
-
+  const fetchVoteState = useCallback(async () => {
     try {
-      const result = await apiRequest<{
+      const clientId = getOrCreateClientId();
+      const res = await apiRequest<{
         upvotes: number;
         downvotes: number;
-        userVote: string | null;
+        userVote: VoteType;
+      }>(`/api/papers/${paperId}/vote?clientId=${encodeURIComponent(clientId)}`);
+      setUpvotes(res.upvotes);
+      setDownvotes(res.downvotes);
+      setUserVote(res.userVote);
+    } catch {
+      // Non-critical background failure
+    }
+  }, [paperId]);
+
+  useEffect(() => {
+    fetchVoteState();
+  }, [fetchVoteState]);
+
+  async function handleVote(type: "up" | "down") {
+    if (submitting) return;
+    setSubmitting(true);
+    const clientId = getOrCreateClientId();
+
+    const previousVote = userVote;
+    const previousUp = upvotes;
+    const previousDown = downvotes;
+
+    if (userVote === type) {
+      setUserVote(null);
+      if (type === "up") setUpvotes((v) => Math.max(0, v - 1));
+      else setDownvotes((v) => Math.max(0, v - 1));
+    } else {
+      setUserVote(type);
+      if (type === "up") {
+        setUpvotes((v) => v + 1);
+        if (previousVote === "down") setDownvotes((v) => Math.max(0, v - 1));
+      } else {
+        setDownvotes((v) => v + 1);
+        if (previousVote === "up") setUpvotes((v) => Math.max(0, v - 1));
+      }
+    }
+
+    try {
+      const res = await apiRequest<{
+        upvotes: number;
+        downvotes: number;
+        userVote: VoteType;
       }>(`/api/papers/${paperId}/vote`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ clientId: activeClientId, vote: nextVote }),
+        body: JSON.stringify({ voteType: type, clientId }),
       });
-      const syncedResult = result ?? {
-        upvotes: Math.max(0, newUp),
-        downvotes: Math.max(0, newDown),
-        userVote: nextVote,
-      };
-      // Sync with server response
-      setUpvotes(syncedResult.upvotes ?? Math.max(0, newUp));
-      setDownvotes(syncedResult.downvotes ?? Math.max(0, newDown));
-      setUserVote((syncedResult.userVote as VoteType) ?? nextVote);
-
-      if (nextVote === "up")
-        showToast("Thanks for voting this paper helpful!", "success");
-      else if (nextVote === "down")
-        showToast(
-          "Feedback recorded. Thanks for keeping quality high.",
-          "info",
-        );
-      else showToast("Vote removed.", "info");
-    } catch (err) {
-      // Rollback on error
-      setUpvotes(prevUp);
-      setDownvotes(prevDown);
-      setUserVote(prevVote);
+      setUpvotes(res.upvotes);
+      setDownvotes(res.downvotes);
+      setUserVote(res.userVote);
+      showToast(
+        res.userVote
+          ? `Marked as ${type === "up" ? "helpful" : "having issues"}.`
+          : "Vote removed.",
+        "success",
+      );
+    } catch (err: unknown) {
+      setUserVote(previousVote);
+      setUpvotes(previousUp);
+      setDownvotes(previousDown);
       showToast(
         err instanceof Error
           ? err.message
@@ -150,51 +114,58 @@ export function VotingWidget({
   const score = calculateScore(upvotes, downvotes, downloads, createdAt);
 
   return (
-    <div
-      className="vote-widget-container"
-      role="group"
-      aria-label="Rate this paper"
-    >
-      <div className="vote-widget-actions">
+    <div className="w-full flex flex-col gap-2.5" role="group" aria-label="Rate this paper">
+      <div className="grid grid-cols-2 gap-2 w-full">
         <button
           type="button"
-          className={`vote-card-btn vote-up${userVote === "up" ? " active" : ""}`}
+          className={`flex items-center justify-center gap-2 rounded-lg border px-3 py-2 text-xs font-semibold transition cursor-pointer disabled:opacity-50 ${
+            userVote === "up"
+              ? "border-emerald-600 bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-bold"
+              : "border-border-main bg-sand/60 text-ink hover:border-emerald-500 hover:text-emerald-600"
+          }`}
           onClick={() => handleVote("up")}
           disabled={submitting}
           aria-pressed={userVote === "up"}
           title="Mark as helpful"
-          aria-label={`Helpful (${upvotes})`}
         >
-          <ThumbsUp size={14} />
+          <ThumbsUp size={14} className={userVote === "up" ? "fill-current" : ""} />
           <span>Helpful</span>
-          <span className="vote-count">{upvotes}</span>
+          <span className="ml-1 rounded-full bg-border-main/50 px-1.5 py-0.2 font-mono text-[10px]">
+            {upvotes}
+          </span>
         </button>
 
         <button
           type="button"
-          className={`vote-card-btn vote-down${userVote === "down" ? " active" : ""}`}
+          className={`flex items-center justify-center gap-2 rounded-lg border px-3 py-2 text-xs font-semibold transition cursor-pointer disabled:opacity-50 ${
+            userVote === "down"
+              ? "border-rose-600 bg-rose-500/15 text-rose-600 dark:text-rose-400 font-bold"
+              : "border-border-main bg-sand/60 text-ink hover:border-rose-500 hover:text-rose-600"
+          }`}
           onClick={() => handleVote("down")}
           disabled={submitting}
           aria-pressed={userVote === "down"}
           title="Report issues or low quality"
-          aria-label={`Has issues (${downvotes})`}
         >
-          <ThumbsDown size={14} />
+          <ThumbsDown size={14} className={userVote === "down" ? "fill-current" : ""} />
           <span>Issues</span>
-          <span className="vote-count">{downvotes}</span>
+          <span className="ml-1 rounded-full bg-border-main/50 px-1.5 py-0.2 font-mono text-[10px]">
+            {downvotes}
+          </span>
         </button>
       </div>
 
-      <div className="vote-widget-summary">
+      <div className="text-center font-mono text-[11px] text-slate">
         {totalVotes > 0 ? (
           <span>
-            {(score * 100).toFixed(2)}% student rating ({totalVotes}{" "}
-            {totalVotes === 1 ? "vote" : "votes"})
+            {(score * 100).toFixed(0)}% positive rating ({totalVotes} {totalVotes === 1 ? "review" : "reviews"})
           </span>
         ) : (
-          <span>No ratings yet — be the first!</span>
+          <span>No ratings yet — be the first to rate!</span>
         )}
       </div>
     </div>
   );
 }
+
+export default VotingWidget;

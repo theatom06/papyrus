@@ -22,7 +22,7 @@ export type PdfViewerProps = {
   downloadUrl?: string;
 };
 
-export function PdfViewer({
+export default function PdfViewer({
   file,
   src,
   title,
@@ -37,7 +37,7 @@ export function PdfViewer({
   const [numPages, setNumPages] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [scale, setScale] = useState<number>(1.2);
-  const [viewMode, setViewMode] = useState<"single" | "all">("all");
+  const [viewMode, setViewMode] = useState<"single" | "all">("single");
   const [isFullscreen, setIsFullscreen] = useState(false);
   const docRef = useRef<any>(null);
 
@@ -211,42 +211,42 @@ export function PdfViewer({
   return (
     <section
       ref={sectionRef}
-      className={`pdf-preview ${isFullscreen ? "pdf-fullscreen-active" : ""} ${className}`}
+      className={`overflow-hidden rounded-xl border border-border-main bg-linen ${
+        isFullscreen ? "fixed inset-0 z-[99999] flex flex-col rounded-none border-0 bg-sand" : ""
+      } ${className}`}
     >
       {showHeader && (
-        <header className="pdf-preview-header">
-          <div className="pdf-preview-title">
-            <FileText size={15} />
-            <strong>{title || "Document Preview"}</strong>
+        <header className="flex flex-wrap items-center justify-between gap-2 border-b border-border-main bg-sand/60 px-3 py-2">
+          <div className="flex items-center gap-2 text-xs font-semibold text-ink">
+            <FileText size={15} className="text-amber" />
+            <span>{title || "Document Preview"}</span>
             {numPages > 0 && (
-              <span className="pdf-page-count">
+              <span className="rounded-full bg-border-main/60 px-2 py-0.5 font-mono text-[10px] text-slate">
                 {numPages} {numPages === 1 ? "page" : "pages"}
               </span>
             )}
           </div>
 
-          <div className="pdf-preview-controls">
+          <div className="flex flex-wrap items-center gap-1.5">
             {viewMode === "single" && numPages > 1 && (
-              <div className="pdf-pager">
+              <div className="flex items-center rounded-md border border-border-main">
                 <button
                   type="button"
-                  className="pdf-tool-btn"
+                  className="grid size-7 place-items-center rounded-l-md text-slate hover:bg-sand hover:text-ink transition disabled:opacity-40 cursor-pointer"
                   disabled={currentPage <= 1}
                   onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                   aria-label="Previous page"
                 >
                   <ChevronLeft size={14} />
                 </button>
-                <span>
+                <span className="border-x border-border-main px-2 font-mono text-[11px] text-ink">
                   {currentPage} / {numPages}
                 </span>
                 <button
                   type="button"
-                  className="pdf-tool-btn"
+                  className="grid size-7 place-items-center rounded-r-md text-slate hover:bg-sand hover:text-ink transition disabled:opacity-40 cursor-pointer"
                   disabled={currentPage >= numPages}
-                  onClick={() =>
-                    setCurrentPage((p) => Math.min(numPages, p + 1))
-                  }
+                  onClick={() => setCurrentPage((p) => Math.min(numPages, p + 1))}
                   aria-label="Next page"
                 >
                   <ChevronRight size={14} />
@@ -257,7 +257,7 @@ export function PdfViewer({
             {numPages > 1 && (
               <button
                 type="button"
-                className="pdf-tool-btn text-btn"
+                className="rounded-md border border-border-main px-2.5 py-1 text-[11px] text-slate hover:border-amber hover:text-amber transition cursor-pointer"
                 onClick={() =>
                   setViewMode((mode) => (mode === "all" ? "single" : "all"))
                 }
@@ -266,10 +266,10 @@ export function PdfViewer({
               </button>
             )}
 
-            <div className="pdf-zoom">
+            <div className="flex items-center rounded-md border border-border-main">
               <button
                 type="button"
-                className="pdf-tool-btn"
+                className="grid size-7 place-items-center rounded-l-md text-slate hover:bg-sand hover:text-ink transition disabled:opacity-40 cursor-pointer"
                 disabled={scale <= 0.8}
                 onClick={() => setScale((s) => Math.max(0.7, s - 0.2))}
                 aria-label="Zoom out"
@@ -279,7 +279,7 @@ export function PdfViewer({
               </button>
               <button
                 type="button"
-                className="pdf-tool-btn"
+                className="grid size-7 place-items-center rounded-r-md border-l border-border-main text-slate hover:bg-sand hover:text-ink transition disabled:opacity-40 cursor-pointer"
                 disabled={scale >= 2.0}
                 onClick={() => setScale((s) => Math.min(2.0, s + 0.2))}
                 aria-label="Zoom in"
@@ -291,7 +291,7 @@ export function PdfViewer({
 
             <button
               type="button"
-              className="pdf-tool-btn"
+              className="grid size-7 place-items-center rounded-md border border-border-main text-slate hover:border-amber hover:text-amber transition cursor-pointer"
               onClick={toggleFullscreen}
               aria-label={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
               title={isFullscreen ? "Exit fullscreen" : "Fullscreen"}
@@ -302,7 +302,7 @@ export function PdfViewer({
             {(effectiveDownloadUrl || pdfSource) && (
               <button
                 type="button"
-                className="pdf-tool-btn"
+                className="grid size-7 place-items-center rounded-md border border-border-main text-slate hover:border-amber hover:text-amber transition cursor-pointer"
                 onClick={openInNewTab}
                 aria-label="Open PDF in new tab"
                 title="Open PDF in new tab"
@@ -313,7 +313,7 @@ export function PdfViewer({
 
             {effectiveDownloadUrl && (
               <a
-                className="button button-soft pdf-download-btn"
+                className="inline-flex items-center gap-1.5 rounded-md border border-border-main bg-linen px-2.5 py-1 text-xs font-semibold text-ink hover:border-amber hover:text-amber transition shadow-xs"
                 href={effectiveDownloadUrl}
                 download
               >
@@ -326,17 +326,17 @@ export function PdfViewer({
       )}
 
       {loading && !error && (
-        <div className="pdf-loading">
+        <div className="flex min-h-48 items-center justify-center text-sm text-slate">
           <p>Rendering document preview…</p>
         </div>
       )}
 
       {error && (
-        <div className="pdf-error">
+        <div className="flex min-h-48 flex-col items-center justify-center gap-4 text-center text-sm text-slate">
           <p>{error}</p>
           {effectiveDownloadUrl && (
             <a
-              className="button button-dark"
+              className="inline-flex items-center gap-2 rounded-md bg-ink px-4 py-2 text-xs font-semibold text-sand hover:opacity-90 transition"
               href={effectiveDownloadUrl}
               download
             >
@@ -347,7 +347,9 @@ export function PdfViewer({
       )}
 
       <div
-        className={`pdf-pages ${viewMode === "single" ? "single-page" : ""}`}
+        className={`overflow-auto bg-sand/30 ${viewMode === "single" ? "flex justify-center p-4" : "p-4"} ${
+          isFullscreen ? "flex-1" : ""
+        }`}
         ref={containerRef}
       />
     </section>

@@ -3,7 +3,7 @@
 import { ChevronDown, Pin, Plus, Check } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useStorage } from "./storage";
-import { Modal } from "./modal";
+import Modal from "./modal";
 
 export type PinButtonProps = {
   paperId: string;
@@ -88,17 +88,21 @@ export function PinButton({
   return (
     <>
       <div
-        className={`pin-control ${compact ? "pin-compact" : ""} ${className}`}
+        className={`relative inline-flex items-center rounded-md border border-border-main bg-linen shadow-2xs ${className}`}
         ref={controlRef}
       >
         <button
           type="button"
-          className={`pin-main ${pinned ? "pinned" : ""}`}
+          className={`flex items-center gap-1.5 rounded-l-md px-2.5 py-1 text-xs font-semibold transition cursor-pointer ${
+            pinned
+              ? "bg-amber/15 text-amber hover:bg-amber/25"
+              : "text-slate hover:text-ink hover:bg-sand/60"
+          }`}
           onClick={togglePin}
           aria-pressed={Boolean(pinned)}
           title={pinned ? `Pinned in ${group?.name || "shelf"}` : "Pin paper"}
         >
-          <Pin size={13} className={pinned ? "fill-current" : ""} />
+          <Pin size={13} className={pinned ? "fill-current text-amber" : ""} />
           <span>
             {compact
               ? pinned
@@ -112,8 +116,10 @@ export function PinButton({
 
         <button
           type="button"
-          className={`pin-menu-trigger ${pinned ? "pinned" : ""}`}
-          aria-label="Choose pin group"
+          className={`border-l border-border-main px-1.5 py-1 text-slate hover:text-ink hover:bg-sand/60 transition cursor-pointer rounded-r-md ${
+            pinned ? "text-amber" : ""
+          }`}
+          aria-label="Choose pin shelf"
           aria-expanded={menuOpen}
           onClick={() => setMenuOpen(!menuOpen)}
         >
@@ -121,37 +127,51 @@ export function PinButton({
         </button>
 
         {menuOpen && (
-          <div className="pin-menu open">
-            <small>{pinned ? "Move to shelf" : "Pin to shelf"}</small>
-            {groups.map((item) => {
-              const isSelected = item.id === pinned?.groupId;
-              return (
-                <button
-                  type="button"
-                  key={item.id}
-                  className={isSelected ? "active" : ""}
-                  onClick={() => assignGroup(item.id)}
-                >
-                  <span className="pin-menu-item-text">{item.name}</span>
-                  {isSelected && <Check size={12} />}
-                </button>
-              );
-            })}
-            <button type="button" className="new-group" onClick={addGroup}>
-              <Plus size={13} /> New shelf
-            </button>
+          <div className="absolute bottom-full right-0 z-40 mb-1 w-44 rounded-md border border-border-main bg-linen p-1 shadow-lg">
+            <span className="block px-2.5 py-1 font-mono text-[10px] font-semibold uppercase tracking-wider text-slate">
+              {pinned ? "Move to shelf" : "Pin to shelf"}
+            </span>
+            <div className="mt-1 flex flex-col gap-0.5">
+              {groups.map((item) => {
+                const isSelected = item.id === pinned?.groupId;
+                return (
+                  <button
+                    type="button"
+                    key={item.id}
+                    className={`flex w-full items-center justify-between rounded px-2.5 py-1.5 text-left text-xs transition cursor-pointer ${
+                      isSelected
+                        ? "bg-amber/10 font-semibold text-amber"
+                        : "text-ink hover:bg-sand"
+                    }`}
+                    onClick={() => assignGroup(item.id)}
+                  >
+                    <span className="truncate">{item.name}</span>
+                    {isSelected && <Check size={13} className="text-amber shrink-0" />}
+                  </button>
+                );
+              })}
+            </div>
+            <div className="mt-1 border-t border-border-main/70 pt-1">
+              <button
+                type="button"
+                className="flex w-full items-center gap-1.5 rounded px-2.5 py-1.5 text-left text-xs font-medium text-amber hover:bg-amber/10 transition cursor-pointer"
+                onClick={addGroup}
+              >
+                <Plus size={13} /> New shelf
+              </button>
+            </div>
           </div>
         )}
       </div>
 
       {showGroupModal && (
         <Modal
-          title="Create pin group"
-          eyebrow="YOUR PERSONAL SHELF"
+          title="Create pin shelf"
+          eyebrow="YOUR STUDY SHELF"
           onClose={() => setShowGroupModal(false)}
         >
           <form
-            className="modal-form"
+            className="flex flex-col gap-4"
             onSubmit={(event) => {
               event.preventDefault();
               createGroup(
@@ -159,21 +179,38 @@ export function PinButton({
               );
             }}
           >
-            <label>
-              Group name
-              <input
-                name="name"
-                autoFocus
-                required
-                placeholder="e.g. Finals Prep"
-              />
-            </label>
-            <button className="button button-dark" type="submit">
-              Create group
-            </button>
+            <div>
+              <label className="block text-xs font-semibold text-slate">
+                Shelf name
+                <input
+                  name="name"
+                  autoFocus
+                  required
+                  placeholder="e.g. Physics Midterms"
+                  className="mt-1 block w-full rounded-md border border-border-main bg-sand px-3 py-2 text-sm text-ink outline-none focus:border-amber focus:ring-1 focus:ring-amber"
+                />
+              </label>
+            </div>
+            <div className="flex justify-end gap-2 pt-2">
+              <button
+                type="button"
+                className="rounded-md border border-border-main px-4 py-2 text-xs font-medium text-slate hover:text-ink cursor-pointer"
+                onClick={() => setShowGroupModal(false)}
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="rounded-md bg-amber px-4 py-2 text-xs font-semibold text-white hover:bg-amber-dark cursor-pointer shadow-xs"
+              >
+                Create shelf
+              </button>
+            </div>
           </form>
         </Modal>
       )}
     </>
   );
 }
+
+export default PinButton;

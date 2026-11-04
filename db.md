@@ -40,68 +40,68 @@ the resource type belongs to the selected board.
 
 Education boards or institutions.
 
-| Column | Type | Rules |
-| --- | --- | --- |
-| `id` | INTEGER | Primary key, auto-increment |
-| `name` | TEXT | Required, unique |
-| `code` | TEXT | Required, unique |
+| Column | Type    | Rules                       |
+| ------ | ------- | --------------------------- |
+| `id`   | INTEGER | Primary key, auto-increment |
+| `name` | TEXT    | Required, unique            |
+| `code` | TEXT    | Required, unique            |
 
 ### `class_levels`
 
 Grades or class levels under a board.
 
-| Column | Type | Rules |
-| --- | --- | --- |
-| `id` | INTEGER | Primary key, auto-increment |
+| Column     | Type    | Rules                                        |
+| ---------- | ------- | -------------------------------------------- |
+| `id`       | INTEGER | Primary key, auto-increment                  |
 | `board_id` | INTEGER | Required; cascades when its board is deleted |
-| `name` | TEXT | Required, unique per board |
-| `slug` | TEXT | Required, unique per board |
+| `name`     | TEXT    | Required, unique per board                   |
+| `slug`     | TEXT    | Required, unique per board                   |
 
 ### `subjects`
 
 Subjects under a class level.
 
-| Column | Type | Rules |
-| --- | --- | --- |
-| `id` | INTEGER | Primary key, auto-increment |
+| Column           | Type    | Rules                                              |
+| ---------------- | ------- | -------------------------------------------------- |
+| `id`             | INTEGER | Primary key, auto-increment                        |
 | `class_level_id` | INTEGER | Required; cascades when its class level is deleted |
-| `name` | TEXT | Required, unique per class level |
-| `slug` | TEXT | Required, unique per class level |
-| `accent_color` | TEXT | Required, defaults to `#c97732` |
+| `name`           | TEXT    | Required, unique per class level                   |
+| `slug`           | TEXT    | Required, unique per class level                   |
+| `accent_color`   | TEXT    | Required, defaults to `#c97732`                    |
 
 ### `resource_types`
 
 Categories such as exam paper, guide, or notes under a board.
 
-| Column | Type | Rules |
-| --- | --- | --- |
-| `id` | INTEGER | Primary key, auto-increment |
+| Column     | Type    | Rules                                        |
+| ---------- | ------- | -------------------------------------------- |
+| `id`       | INTEGER | Primary key, auto-increment                  |
 | `board_id` | INTEGER | Required; cascades when its board is deleted |
-| `name` | TEXT | Required, unique per board |
+| `name`     | TEXT    | Required, unique per board                   |
 
 ### `papers`
 
 The central paper catalog and CDN object metadata.
 
-| Column | Type | Rules |
-| --- | --- | --- |
-| `id` | TEXT | UUIDv7-style application-generated primary key |
-| `title` | TEXT | Required |
-| `description` | TEXT | Optional |
-| `duration` | INTEGER | Optional; positive minutes when present |
-| `board_id` | INTEGER | Required; compound reference to `boards` hierarchy |
-| `class_level_id` | INTEGER | Required; must belong to `board_id` |
-| `subject_id` | INTEGER | Required; must belong to `class_level_id` |
-| `resource_type_id` | INTEGER | Required; must belong to `board_id` |
-| `exam_year` | INTEGER | Required; at least `1900` |
-| `file_id` | TEXT | Required Hack Club CDN object ID |
-| `file_name` | TEXT | Required CDN object filename |
-| `file_size_bytes` | INTEGER | Required; non-negative |
-| `downloads_count` | INTEGER | Aggregate non-preview download count |
-| `upvotes_count` | INTEGER | Cached aggregate helpful votes |
-| `downvotes_count` | INTEGER | Cached aggregate issue votes |
-| `status` | TEXT | `review`, `approved`, `hidden`, or `soft_delete` |
-| `created_at` | TEXT | Required; SQLite current timestamp by default |
+| Column             | Type    | Rules                                              |
+| ------------------ | ------- | -------------------------------------------------- |
+| `id`               | TEXT    | UUIDv7-style application-generated primary key     |
+| `title`            | TEXT    | Required                                           |
+| `description`      | TEXT    | Optional                                           |
+| `duration`         | INTEGER | Optional; positive minutes when present            |
+| `board_id`         | INTEGER | Required; compound reference to `boards` hierarchy |
+| `class_level_id`   | INTEGER | Required; must belong to `board_id`                |
+| `subject_id`       | INTEGER | Required; must belong to `class_level_id`          |
+| `resource_type_id` | INTEGER | Required; must belong to `board_id`                |
+| `exam_year`        | INTEGER | Required; at least `1900`                          |
+| `file_id`          | TEXT    | Required Hack Club CDN object ID                   |
+| `file_name`        | TEXT    | Required CDN object filename                       |
+| `file_size_bytes`  | INTEGER | Required; non-negative                             |
+| `downloads_count`  | INTEGER | Aggregate non-preview download count               |
+| `upvotes_count`    | INTEGER | Cached aggregate helpful votes                     |
+| `downvotes_count`  | INTEGER | Cached aggregate issue votes                       |
+| `status`           | TEXT    | `review`, `approved`, `hidden`, or `soft_delete`   |
+| `created_at`       | TEXT    | Required; SQLite current timestamp by default      |
 
 Board hierarchy foreign keys use `ON DELETE RESTRICT`, so referenced catalog
 records cannot be deleted while papers use them. A paper's `status` controls
@@ -116,12 +116,12 @@ visibility:
 
 Private submission contact data and comments.
 
-| Column | Type | Rules |
-| --- | --- | --- |
-| `paper_id` | TEXT | Primary key and cascading paper reference |
-| `contributor_email` | TEXT | Required |
-| `comments` | TEXT | Optional |
-| `created_at` | TEXT | Submission timestamp |
+| Column              | Type | Rules                                     |
+| ------------------- | ---- | ----------------------------------------- |
+| `paper_id`          | TEXT | Primary key and cascading paper reference |
+| `contributor_email` | TEXT | Required                                  |
+| `comments`          | TEXT | Optional                                  |
+| `created_at`        | TEXT | Submission timestamp                      |
 
 The application deletes this row when a paper changes from review to another
 status or when the paper is deleted.
@@ -130,27 +130,27 @@ status or when the paper is deleted.
 
 Reports submitted by visitors and processed by admins.
 
-| Column | Type | Rules |
-| --- | --- | --- |
-| `id` | INTEGER | Primary key, auto-increment |
-| `paper_id` | TEXT | Required, cascades with paper |
-| `reason` | TEXT | Required |
-| `details` | TEXT | Optional |
-| `reporter_email` | TEXT | Optional |
-| `status` | TEXT | `pending`, `resolved`, or `dismissed` |
-| `created_at` | TEXT | Report timestamp |
+| Column           | Type    | Rules                                 |
+| ---------------- | ------- | ------------------------------------- |
+| `id`             | INTEGER | Primary key, auto-increment           |
+| `paper_id`       | TEXT    | Required, cascades with paper         |
+| `reason`         | TEXT    | Required                              |
+| `details`        | TEXT    | Optional                              |
+| `reporter_email` | TEXT    | Optional                              |
+| `status`         | TEXT    | `pending`, `resolved`, or `dismissed` |
+| `created_at`     | TEXT    | Report timestamp                      |
 
 ### `paper_votes`
 
 One client-based vote per paper.
 
-| Column | Type | Rules |
-| --- | --- | --- |
-| `id` | INTEGER | Primary key, auto-increment |
-| `paper_id` | TEXT | Required, cascades with paper |
-| `vote_type` | TEXT | `up` or `down` |
-| `client_id` | TEXT | Required browser-generated identifier |
-| `created_at` | TEXT | Vote timestamp |
+| Column       | Type    | Rules                                 |
+| ------------ | ------- | ------------------------------------- |
+| `id`         | INTEGER | Primary key, auto-increment           |
+| `paper_id`   | TEXT    | Required, cascades with paper         |
+| `vote_type`  | TEXT    | `up` or `down`                        |
+| `client_id`  | TEXT    | Required browser-generated identifier |
+| `created_at` | TEXT    | Vote timestamp                        |
 
 `(paper_id, client_id)` is unique. Changing or removing a vote updates the
 cached counters on `papers`.
@@ -214,24 +214,24 @@ status changes. Logs are outside SQLite and are not a durable audit table.
 
 The schema includes:
 
-| Index | Purpose |
-| --- | --- |
-| `idx_papers_filter` | Combined catalog filtering |
-| `idx_papers_status_created` | Public/admin status listings ordered by creation |
-| `idx_papers_file_id` | CDN object lookup |
-| `idx_papers_board` | Board filtering |
-| `idx_papers_class_level` | Class-level filtering |
-| `idx_papers_subject` | Subject filtering |
-| `idx_papers_resource_type` | Resource-type filtering |
-| `idx_papers_exam_year` | Year filtering |
-| `idx_resource_types_board` | Board resource-type lookup |
-| `idx_class_levels_board` | Board class-level lookup |
-| `idx_subjects_class_level` | Class-level subject lookup |
-| `idx_reports_paper` | Reports for a paper |
-| `idx_reports_status` | Report status filtering |
-| `idx_reports_status_created` | Report queues ordered by creation |
-| `idx_votes_paper` | Vote aggregation by paper |
-| `idx_votes_client` | Vote lookup for a paper/client pair |
+| Index                        | Purpose                                          |
+| ---------------------------- | ------------------------------------------------ |
+| `idx_papers_filter`          | Combined catalog filtering                       |
+| `idx_papers_status_created`  | Public/admin status listings ordered by creation |
+| `idx_papers_file_id`         | CDN object lookup                                |
+| `idx_papers_board`           | Board filtering                                  |
+| `idx_papers_class_level`     | Class-level filtering                            |
+| `idx_papers_subject`         | Subject filtering                                |
+| `idx_papers_resource_type`   | Resource-type filtering                          |
+| `idx_papers_exam_year`       | Year filtering                                   |
+| `idx_resource_types_board`   | Board resource-type lookup                       |
+| `idx_class_levels_board`     | Board class-level lookup                         |
+| `idx_subjects_class_level`   | Class-level subject lookup                       |
+| `idx_reports_paper`          | Reports for a paper                              |
+| `idx_reports_status`         | Report status filtering                          |
+| `idx_reports_status_created` | Report queues ordered by creation                |
+| `idx_votes_paper`            | Vote aggregation by paper                        |
+| `idx_votes_client`           | Vote lookup for a paper/client pair              |
 
 Primary keys and unique constraints also create SQLite indexes.
 

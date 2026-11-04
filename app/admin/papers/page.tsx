@@ -1,14 +1,11 @@
 "use client";
 
-import "@/app/admin/style.css";
-import "./style.css";
-
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { BookOpen, Check, Settings2, Trash2 } from "lucide-react";
-import { AdminShell } from "../components/admin-shell";
-import { SearchBox } from "@/components/search-box";
-import { Dropdown } from "@/components/dropdown";
+import AdminShell from "../components/admin-shell";
+import SearchBox from "@/components/search-box";
+import Dropdown from "@/components/dropdown";
 import { apiRequest } from "@/lib/api-client";
 import { useToast } from "@/components/toast";
 import type { Paper } from "../components/types";
@@ -113,29 +110,33 @@ export default function AdminPapersPage() {
 
   return (
     <AdminShell title="Papers" active="Papers">
-      <div className="dashboard-content">
-        <div className="view-heading">
+      <div className="mx-auto w-full max-w-[1035px] px-5 pb-24 pt-8 sm:px-[4.5vw]">
+        <div className="mb-7 flex items-end justify-between gap-5 max-[720px]:flex-col max-[720px]:items-stretch">
           <div>
-            <div className="eyebrow">CONTENT ARCHIVE</div>
-            <h2>
+            <div className="font-mono text-[9px] uppercase tracking-[0.12em] text-amber">
+              CONTENT ARCHIVE
+            </div>
+            <h2 className="mt-2 font-[Georgia] text-[29px] tracking-[-0.035em]">
               All Papers{" "}
-              <span className="count-pill">{filteredPapers.length}</span>
+              <span className="inline-flex rounded-full border border-amber/40 bg-amber/10 px-2 py-1 font-mono text-[10px] text-amber">
+                {filteredPapers.length}
+              </span>
             </h2>
-            <p>
+            <p className="mt-2 max-w-xl text-sm leading-6 text-slate">
               Search, filter, inspect, and moderate past examination papers
               across all curricula.
             </p>
           </div>
         </div>
 
-        <div className="table-tools">
+        <div className="mb-3 flex items-center gap-2 max-[720px]:flex-col max-[720px]:items-stretch">
           <SearchBox
             value={query}
             onChange={setQuery}
             placeholder="Search by title, subject, board, level, year, contributor..."
           />
           <Dropdown
-            className="admin-filter-dropdown"
+            className="rounded-md border border-border-main bg-linen px-3 py-2 text-sm text-ink"
             value={statusFilter}
             onChange={(value) =>
               setStatusFilter(value as "all" | Paper["status"])
@@ -150,8 +151,8 @@ export default function AdminPapersPage() {
           />
         </div>
 
-        <div className="panel table-panel">
-          <div className="paper-table header-row">
+        <div className="overflow-x-auto rounded-md border border-border-main bg-linen p-5">
+          <div className="hidden grid-cols-[2.4fr_.8fr_.8fr_.7fr_1fr_.8fr_.8fr] gap-3 border-b border-border-main pb-3 font-mono text-[10px] uppercase tracking-wider text-slate md:grid">
             <span>Paper</span>
             <span>Board</span>
             <span>Level</span>
@@ -163,29 +164,26 @@ export default function AdminPapersPage() {
 
           {loading ? (
             <p
-              className="panel-empty"
-              style={{
-                padding: "48px 20px",
-                textAlign: "center",
-                color: "var(--slate)",
-              }}
+              className="p-12 text-center text-sm text-slate"
             >
               Loading papers…
             </p>
           ) : filteredPapers.length ? (
             filteredPapers.map((paper) => (
-              <div className="paper-table" key={paper.id}>
+              <div
+                className="grid gap-3 border-t border-border-main py-4 text-sm md:grid-cols-[2.4fr_.8fr_.8fr_.7fr_1fr_.8fr_.8fr] md:items-center"
+                key={paper.id}
+              >
                 <div
-                  className="table-paper"
-                  style={{ cursor: "pointer" }}
+                  className="flex min-w-[260px] cursor-pointer items-center gap-2.5"
                   onClick={() => router.push(`/admin/papers/${paper.id}`)}
                 >
-                  <div className="file-icon">
+                  <div className="grid size-[30px] shrink-0 place-items-center rounded-md bg-amber/10 text-amber">
                     <BookOpen size={16} />
                   </div>
                   <span>
-                    <strong>{paper.title}</strong>
-                    <small>
+                    <strong className="block text-xs">{paper.title}</strong>
+                    <small className="mt-0.5 block text-[10px] text-slate">
                       {paper.subject} · {paper.type}
                       {paper.contributorEmail && ` · ${paper.contributorEmail}`}
                     </small>
@@ -196,12 +194,12 @@ export default function AdminPapersPage() {
                 <span>{paper.classLevel}</span>
                 <span>{paper.year}</span>
                 <span
-                  className={`status ${paper.status === "approved" ? "published" : paper.status}`}
+                  className={`w-fit rounded-full border px-2 py-1 font-mono text-[9px] uppercase ${paper.status === "approved" ? "border-emerald-600/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400" : "border-amber/40 bg-amber/10 text-amber"}`}
                 >
                   {paper.status.replace("_", " ")}
                 </span>
                 <span>{paper.downloads.toLocaleString()}</span>
-                <span className="row-actions">
+                <span className="flex justify-end gap-1.5">
                   <button
                     type="button"
                     onClick={() => router.push(`/admin/papers/${paper.id}`)}
@@ -215,7 +213,7 @@ export default function AdminPapersPage() {
                       type="button"
                       onClick={() => publish(paper.id)}
                       title="Approve paper"
-                      style={{ color: "var(--status-approved)" }}
+                      className="grid size-7 place-items-center rounded-md border border-emerald-600/30 text-emerald-600 hover:border-emerald-600 dark:text-emerald-400"
                       aria-label="Approve"
                     >
                       <Check size={15} />
@@ -225,7 +223,7 @@ export default function AdminPapersPage() {
                     type="button"
                     onClick={() => deletePaper(paper.id)}
                     title="Soft delete paper"
-                    style={{ color: "var(--status-danger)" }}
+                    className="grid size-7 place-items-center rounded-md border border-rose-600/30 text-rose-600 hover:border-rose-600 dark:text-rose-400"
                     aria-label="Soft delete"
                   >
                     <Trash2 size={15} />
@@ -235,12 +233,7 @@ export default function AdminPapersPage() {
             ))
           ) : (
             <p
-              className="panel-empty"
-              style={{
-                padding: "48px 20px",
-                textAlign: "center",
-                color: "var(--slate)",
-              }}
+              className="p-12 text-center text-sm text-slate"
             >
               No papers match the current filters.
             </p>

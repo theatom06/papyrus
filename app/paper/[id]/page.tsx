@@ -1,7 +1,5 @@
 "use client";
 
-import "./style.css";
-
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -20,13 +18,12 @@ import {
   BookOpen,
   Layers,
 } from "lucide-react";
-import { Layout } from "@/components/layout";
-import { PinButton } from "@/components/pin-button";
-import { PageTitle } from "@/components/page-title";
+import Layout from "@/components/layout";
+import PinButton from "@/components/pin-button";
 import { apiRequest } from "@/lib/api-client";
-import { PdfViewer } from "@/components/pdf-viewer";
-import { VotingWidget } from "@/components/voting-widget";
-import { ReportPaperModal } from "@/components/report-paper-modal";
+import PdfViewer from "@/components/pdf-viewer";
+import VotingWidget from "@/components/voting-widget";
+import ReportPaperModal from "@/components/report-paper-modal";
 import { formatDate, formatFileSize } from "@/util/format";
 
 type PaperDetail = {
@@ -61,7 +58,7 @@ function formatDuration(minutes?: number): string {
   return `${minutes} mins`;
 }
 
-export default function PaperPage() {
+export function PaperPage() {
   const { id } = useParams<{ id: string }>();
   const [paper, setPaper] = useState<PaperDetail | null>(null);
   const [error, setError] = useState("");
@@ -95,18 +92,18 @@ export default function PaperPage() {
       setCopied(true);
       setTimeout(() => setCopied(false), 2500);
     }
+
   }
 
   if (loading) {
     return (
       <Layout>
-        <PageTitle title="Loading Paper" />
-        <main className="detail-page-container">
-          <div className="detail-loading-state">
-            <div className="skeleton skeleton-breadcrumb" />
-            <div className="skeleton skeleton-badge" />
-            <div className="skeleton skeleton-title" />
-            <div className="skeleton skeleton-viewer" />
+        <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+          <div className="flex flex-col gap-4">
+            <div className="h-4 w-32 animate-pulse rounded bg-border-main" />
+            <div className="h-6 w-24 animate-pulse rounded bg-border-main" />
+            <div className="h-8 w-96 animate-pulse rounded bg-border-main" />
+            <div className="h-96 animate-pulse rounded-xl bg-border-main" />
           </div>
         </main>
       </Layout>
@@ -116,18 +113,15 @@ export default function PaperPage() {
   if (error || !paper) {
     return (
       <Layout>
-        <PageTitle title="Paper Not Found" />
-        <main className="detail-page-container">
-          <div className="detail-error-state">
-            <Link className="back-breadcrumb" href="/archive">
-              <ArrowLeft size={14} /> Back to archive
-            </Link>
-            <h2>Unable to load paper</h2>
-            <p>{error || "This paper does not exist or has been archived."}</p>
-            <Link className="button button-dark" href="/archive">
-              Browse archive
-            </Link>
-          </div>
+        <main className="mx-auto max-w-6xl px-4 py-16 text-center sm:px-6">
+          <Link className="mb-8 inline-flex items-center gap-1.5 text-xs font-medium text-slate hover:text-amber transition" href="/archive">
+            <ArrowLeft size={14} /> Back to archive
+          </Link>
+          <h2 className="mt-4 font-serif text-2xl font-bold">Unable to load paper</h2>
+          <p className="mt-2 text-sm text-slate">{error || "This paper does not exist or has been removed from the archive."}</p>
+          <Link className="button-dark mt-6 inline-flex items-center gap-2 rounded-md bg-ink px-5 py-2.5 text-sm font-semibold text-sand hover:opacity-90" href="/archive">
+            Browse archive
+          </Link>
         </main>
       </Layout>
     );
@@ -140,9 +134,8 @@ export default function PaperPage() {
   return (
     <>
       <Layout>
-        <PageTitle title={`${paper.title} — ${paper.board}`} />
         <main
-          className="detail-page-container"
+          className="mx-auto max-w-6xl px-4 py-8 sm:px-6"
           style={
             {
               "--subject-accent": accentColor,
@@ -151,12 +144,12 @@ export default function PaperPage() {
           }
         >
           {/* Navigation & Breadcrumb Bar */}
-          <nav className="detail-nav-bar" aria-label="Paper navigation">
+          <nav className="mb-5 flex items-center justify-between gap-3 text-xs text-slate" aria-label="Paper navigation">
             <Link className="back-breadcrumb" href="/archive">
               <ArrowLeft size={14} /> Back to archive
             </Link>
 
-            <div className="detail-crumbs">
+            <div className="flex items-center gap-2">
               <Link href="/archive">Archive</Link>
               <span className="crumb-sep">/</span>
               <Link href={`/archive?board=${encodeURIComponent(paper.board)}`}>
@@ -198,7 +191,7 @@ export default function PaperPage() {
           </nav>
 
           {/* Paper Hero Header */}
-          <header className="paper-hero">
+          <header className="mb-6 rounded-xl border border-border-main bg-linen p-5 shadow-sm">
             <div className="hero-top-row">
               <div className="hero-badges">
                 <Link
@@ -242,27 +235,27 @@ export default function PaperPage() {
               </div>
             </div>
 
-            <h1 className="hero-title">{paper.title}</h1>
+            <h1 className="mt-3 font-serif text-2xl font-bold sm:text-3xl">{paper.title}</h1>
 
             {/* Quick Metrics Strip */}
-            <div className="hero-stats-strip">
-              <div className="stat-pill">
+            <div className="mt-4 flex flex-wrap gap-2">
+              <div className="inline-flex items-center gap-1.5 rounded-md border border-border-main bg-sand px-2.5 py-1 text-xs text-slate">
                 <Calendar size={13} />
                 <span>{paper.year} Exam</span>
               </div>
-              <div className="stat-pill">
+              <div className="inline-flex items-center gap-1.5 rounded-md border border-border-main bg-sand px-2.5 py-1 text-xs text-slate">
                 <Clock size={13} />
                 <span>{formatDuration(paper.duration)}</span>
               </div>
-              <div className="stat-pill">
+              <div className="inline-flex items-center gap-1.5 rounded-md border border-border-main bg-sand px-2.5 py-1 text-xs text-slate">
                 <FileText size={13} />
                 <span>{formatFileSize(paper.file_size_bytes)}</span>
               </div>
-              <div className="stat-pill">
+              <div className="inline-flex items-center gap-1.5 rounded-md border border-border-main bg-sand px-2.5 py-1 text-xs text-slate">
                 <Download size={13} />
                 <span>{paper.downloads} downloads</span>
               </div>
-              <div className="stat-pill">
+              <div className="inline-flex items-center gap-1.5 rounded-md border border-border-main bg-sand px-2.5 py-1 text-xs text-slate">
                 <GraduationCap size={13} />
                 <span>{paper.board_name}</span>
               </div>
@@ -270,11 +263,11 @@ export default function PaperPage() {
           </header>
 
           {/* Two-Column Responsive Layout */}
-          <div className="detail-layout">
+          <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
             {/* Main Column */}
-            <article className="detail-main">
+            <article className="flex min-w-0 flex-col gap-5">
               {/* Interactive PDF Viewer */}
-              <div className="detail-viewer-wrapper">
+              <div className="overflow-hidden rounded-lg border border-border-main bg-linen shadow-sm">
                 <PdfViewer
                   src={previewUrl}
                   title={`${paper.title} (${paper.year})`}
@@ -283,28 +276,36 @@ export default function PaperPage() {
               </div>
 
               {/* Description & Syllabus Overview */}
-              <section className="detail-card overview-card">
-                <div className="card-heading">
-                  <BookOpen size={16} />
-                  <h2>About this resource</h2>
+              <section className="rounded-lg border border-border-main bg-linen p-5 shadow-sm sm:p-6">
+                <div className="flex items-center gap-2 border-b border-border-main/70 pb-3">
+                  <span className="grid size-7 place-items-center rounded-md bg-amber/10 text-amber">
+                    <BookOpen size={15} />
+                  </span>
+                  <h2 className="font-serif text-lg font-bold text-ink">
+                    About this resource
+                  </h2>
                 </div>
-                <p className="overview-text">
+                <p className="mt-4 text-sm leading-6 text-slate">
                   {paper.description ||
                     `Standard ${paper.type.toLowerCase()} for ${paper.subject} under the ${paper.board_name} (${paper.board}) curriculum for ${paper.class_level}. Recommended for authentic practice, revision, and mock exam simulations.`}
                 </p>
 
-                <div className="study-advice">
-                  <div className="advice-item">
-                    <strong>Recommended Session</strong>
-                    <p>
+                <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                  <div className="rounded-md border border-border-main/70 bg-sand/60 p-3">
+                    <strong className="block text-xs font-semibold uppercase tracking-wide text-amber">
+                      Recommended Session
+                    </strong>
+                    <p className="mt-2 text-xs leading-5 text-slate">
                       {paper.duration
                         ? `Sit for a focused ${formatDuration(paper.duration)} block under timed conditions to mirror authentic exam pacing.`
                         : "Work through problem sets section-by-section, identifying key terminology and core derivation steps."}
                     </p>
                   </div>
-                  <div className="advice-item">
-                    <strong>Curriculum Level</strong>
-                    <p>
+                  <div className="rounded-md border border-border-main/70 bg-sand/60 p-3">
+                    <strong className="block text-xs font-semibold uppercase tracking-wide text-amber">
+                      Curriculum Level
+                    </strong>
+                    <p className="mt-2 text-xs leading-5 text-slate">
                       {paper.class_level} — {paper.board_name}. Verified for
                       curriculum accuracy and syllabus relevance.
                     </p>
@@ -314,12 +315,12 @@ export default function PaperPage() {
             </article>
 
             {/* Sidebar Column */}
-            <aside className="detail-sidebar">
+            <aside className="flex flex-col gap-5">
               {/* Action Box */}
-              <div className="sidebar-card action-card">
+              <div className="rounded-lg border border-border-main bg-linen p-4 shadow-sm">
                 <small className="sidebar-label">ACTIONS</small>
                 <a
-                  className="button-download-primary"
+                  className="flex w-full items-center justify-center gap-2 rounded-md bg-amber px-4 py-3 text-sm font-bold text-white transition hover:bg-amber-dark"
                   href={downloadUrl}
                   download
                 >
@@ -345,7 +346,7 @@ export default function PaperPage() {
 
                 <button
                   type="button"
-                  className="button-report-secondary"
+                  className="inline-flex items-center gap-2 rounded-md border border-border-main bg-linen px-4 py-2 text-sm font-medium text-slate transition hover:border-amber hover:text-amber"
                   onClick={() => setShowReport(true)}
                 >
                   <Flag size={13} />
@@ -354,7 +355,7 @@ export default function PaperPage() {
               </div>
 
               {/* Voting Widget */}
-              <div className="sidebar-card voting-card">
+              <div className="rounded-lg border border-border-main bg-linen p-4 shadow-sm">
                 <small className="sidebar-label">COMMUNITY RATING</small>
                 <VotingWidget
                   paperId={paper.id}
@@ -364,11 +365,11 @@ export default function PaperPage() {
               </div>
 
               {/* Specifications Matrix */}
-              <div className="sidebar-card specs-card">
+              <div className="rounded-lg border border-border-main bg-linen p-4 shadow-sm">
                 <small className="sidebar-label">SPECIFICATIONS</small>
 
-                <dl className="specs-list">
-                  <div className="spec-row">
+                <dl className="divide-y divide-border-main/70">
+                  <div className="flex items-start justify-between gap-3 py-2.5 text-xs">
                     <dt>Subject</dt>
                     <dd>
                       <Link
@@ -384,7 +385,7 @@ export default function PaperPage() {
                     </dd>
                   </div>
 
-                  <div className="spec-row">
+                  <div className="flex items-start justify-between gap-3 py-2.5 text-xs">
                     <dt>Board</dt>
                     <dd>
                       <Link
@@ -397,7 +398,7 @@ export default function PaperPage() {
                     </dd>
                   </div>
 
-                  <div className="spec-row">
+                  <div className="flex items-start justify-between gap-3 py-2.5 text-xs">
                     <dt>Level</dt>
                     <dd>
                       <Link
@@ -409,7 +410,7 @@ export default function PaperPage() {
                     </dd>
                   </div>
 
-                  <div className="spec-row">
+                  <div className="flex items-start justify-between gap-3 py-2.5 text-xs">
                     <dt>Format</dt>
                     <dd>
                       <Link
@@ -421,7 +422,7 @@ export default function PaperPage() {
                     </dd>
                   </div>
 
-                  <div className="spec-row">
+                  <div className="flex items-start justify-between gap-3 py-2.5 text-xs">
                     <dt>Exam Year</dt>
                     <dd>
                       <Link
@@ -433,21 +434,21 @@ export default function PaperPage() {
                     </dd>
                   </div>
 
-                  <div className="spec-row">
+                  <div className="flex items-start justify-between gap-3 py-2.5 text-xs">
                     <dt>Reading Time</dt>
                     <dd>
                       <strong>{formatDuration(paper.duration)}</strong>
                     </dd>
                   </div>
 
-                  <div className="spec-row">
+                  <div className="flex items-start justify-between gap-3 py-2.5 text-xs">
                     <dt>File Size</dt>
                     <dd>
                       <strong>{formatFileSize(paper.file_size_bytes)}</strong>
                     </dd>
                   </div>
 
-                  <div className="spec-row">
+                  <div className="flex items-start justify-between gap-3 py-2.5 text-xs">
                     <dt>Total Downloads</dt>
                     <dd>
                       <strong>{paper.downloads}</strong>
@@ -464,7 +465,7 @@ export default function PaperPage() {
               </div>
 
               {/* Explore Next / Related */}
-              <div className="sidebar-card explore-card">
+              <div className="rounded-lg border border-border-main bg-linen p-4 shadow-sm">
                 <small className="sidebar-label">SIMILAR PAPERS</small>
                 <div className="explore-links">
                   <Link
@@ -513,3 +514,5 @@ export default function PaperPage() {
     </>
   );
 }
+
+export default PaperPage;

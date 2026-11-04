@@ -23,7 +23,7 @@ Papyrus was created to eliminate that friction. By centralizing authentic exam p
 - A shelf to keep pin in various groups
 - Full Support for Light, Dark and True Black!!
 - Responsive layouts, loading states, empty states, error states and toast notifications system.
-- A small feature is that when you click share on the paper view page it actully dosn't copy the current URL but instead copies to a proxy `/p/:paper_id` which redirects to the actual paper view page. 
+- A small feature is that when you click share on the paper view page it actully dosn't copy the current URL but instead copies to a proxy `/p/:paper_id` which redirects to the actual paper view page.
 
 ### Admin front
 
@@ -48,7 +48,7 @@ Papyrus is a Next.js App:
 - **Files:** Hack Club CDN through `db/hc-cdn.ts`
 - **Authentication:** bcrypt password verification plus an HMAC-SHA256 signed
   admin token
-  
+
 ## Data flow
 
 ### Browsing and viewing a paper
@@ -98,46 +98,46 @@ The reason I opted for parameterized URL queries is so that in the paper view pa
 
 ### Pages
 
-| Route | Purpose |
-| --- | --- |
-| `/home` | Public landing page |
-| `/archive` | Searchable and filterable approved-paper archive |
-| `/paper/:id` | Paper metadata, preview, voting, reporting, and download actions |
-| `/upload` | Community submission form |
-| `/pins` | Browser-local pinned papers and groups |
-| `/settings` | Browser-local preferences |
-| `/login` | Admin login |
-| `/admin` | Admin dashboard |
-| `/admin/review` | Review queue |
-| `/admin/papers` | Paper management |
-| `/admin/papers/:id` | Paper editing and reports |
-| `/admin/boards` | Board Studio |
-| `/admin/boards/:id` | Board hierarchy management |
-| `/admin/reports` | Report management |
-| `/admin/poor-performing` | Low-performing paper report |
+| Route                    | Purpose                                                          |
+| ------------------------ | ---------------------------------------------------------------- |
+| `/home`                  | Public landing page                                              |
+| `/archive`               | Searchable and filterable approved-paper archive                 |
+| `/paper/:id`             | Paper metadata, preview, voting, reporting, and download actions |
+| `/upload`                | Community submission form                                        |
+| `/pins`                  | Browser-local pinned papers and groups                           |
+| `/settings`              | Browser-local preferences                                        |
+| `/login`                 | Admin login                                                      |
+| `/admin`                 | Admin dashboard                                                  |
+| `/admin/review`          | Review queue                                                     |
+| `/admin/papers`          | Paper management                                                 |
+| `/admin/papers/:id`      | Paper editing and reports                                        |
+| `/admin/boards`          | Board Studio                                                     |
+| `/admin/boards/:id`      | Board hierarchy management                                       |
+| `/admin/reports`         | Report management                                                |
+| `/admin/poor-performing` | Low-performing paper report                                      |
 
 ### API
 
-| Endpoint | Methods | Purpose |
-| --- | --- | --- |
-| `/api/auth/login` | `POST`, `DELETE` | Create or clear admin session |
-| `/api/boards` | `GET`, `POST` | List catalog options or create a board |
-| `/api/boards/:id` | `GET`, `PATCH` | Read or edit a board |
-| `/api/boards/:id/class-levels` | `POST` | Add a class level |
-| `/api/boards/:id/resource-types` | `POST` | Add a resource type |
-| `/api/class-levels/:id` | `PATCH`, `DELETE` | Edit or delete a class level |
-| `/api/class-levels/:id/subjects` | `POST` | Add a subject |
-| `/api/subjects/:id` | `PATCH`, `DELETE` | Edit or delete a subject |
-| `/api/resource-types/:id` | `PATCH`, `DELETE` | Edit or delete a resource type |
-| `/api/papers` | `GET` | List papers and apply filters |
-| `/api/papers/upload` | `POST` | Validate and submit a PDF |
-| `/api/papers/:id` | `GET`, `PATCH`, `DELETE` | Read or administer a paper |
-| `/api/papers/:id/download` | `GET` | Redirect to CDN preview/download |
-| `/api/papers/:id/vote` | `GET`, `POST` | Read or change client vote |
-| `/api/papers/:id/report` | `POST` | Submit a paper report |
-| `/api/papers/poor-performing` | `GET` | Admin performance report |
-| `/api/reports` | `GET` | List admin reports |
-| `/api/reports/:id` | `PATCH`, `DELETE` | Update or delete a report |
+| Endpoint                         | Methods                  | Purpose                                |
+| -------------------------------- | ------------------------ | -------------------------------------- |
+| `/api/auth/login`                | `POST`, `DELETE`         | Create or clear admin session          |
+| `/api/boards`                    | `GET`, `POST`            | List catalog options or create a board |
+| `/api/boards/:id`                | `GET`, `PATCH`           | Read or edit a board                   |
+| `/api/boards/:id/class-levels`   | `POST`                   | Add a class level                      |
+| `/api/boards/:id/resource-types` | `POST`                   | Add a resource type                    |
+| `/api/class-levels/:id`          | `PATCH`, `DELETE`        | Edit or delete a class level           |
+| `/api/class-levels/:id/subjects` | `POST`                   | Add a subject                          |
+| `/api/subjects/:id`              | `PATCH`, `DELETE`        | Edit or delete a subject               |
+| `/api/resource-types/:id`        | `PATCH`, `DELETE`        | Edit or delete a resource type         |
+| `/api/papers`                    | `GET`                    | List papers and apply filters          |
+| `/api/papers/upload`             | `POST`                   | Validate and submit a PDF              |
+| `/api/papers/:id`                | `GET`, `PATCH`, `DELETE` | Read or administer a paper             |
+| `/api/papers/:id/download`       | `GET`                    | Redirect to CDN preview/download       |
+| `/api/papers/:id/vote`           | `GET`, `POST`            | Read or change client vote             |
+| `/api/papers/:id/report`         | `POST`                   | Submit a paper report                  |
+| `/api/papers/poor-performing`    | `GET`                    | Admin performance report               |
+| `/api/reports`                   | `GET`                    | List admin reports                     |
+| `/api/reports/:id`               | `PATCH`, `DELETE`        | Update or delete a report              |
 
 ## Authentication and authorization
 
@@ -158,15 +158,15 @@ process-local, so it does not coordinate across multiple instances.
 
 ## Environment variables
 
-| Variable | Use | Default/requirement |
-| --- | --- | --- |
-| `ADMIN_PASSWORD_HASH` | Base64-encoded bcrypt hash for admin login | Required |
-| `ADMIN_JWT_SECRET` | Secret used to sign admin tokens | Required |
-| `HC_CDN_API_KEY` | Hack Club CDN upload/delete authorization | Required for uploads |
-| `DB_PATH` | SQLite database path | `papyrus.sqlite` |
-| `SERVER_LOG_PATH` | Directory for server logs | `./logs/server` |
-| `ADMIN_LOG_PATH` | Directory for admin logs | `./logs/admin` |
-| `NOLOGS` | Disable logging | Optional |
+| Variable              | Use                                        | Default/requirement  |
+| --------------------- | ------------------------------------------ | -------------------- |
+| `ADMIN_PASSWORD_HASH` | Base64-encoded bcrypt hash for admin login | Required             |
+| `ADMIN_JWT_SECRET`    | Secret used to sign admin tokens           | Required             |
+| `HC_CDN_API_KEY`      | Hack Club CDN upload/delete authorization  | Required for uploads |
+| `DB_PATH`             | SQLite database path                       | `papyrus.sqlite`     |
+| `SERVER_LOG_PATH`     | Directory for server logs                  | `./logs/server`      |
+| `ADMIN_LOG_PATH`      | Directory for admin logs                   | `./logs/admin`       |
+| `NOLOGS`              | Disable logging                            | Optional             |
 
 ## Storage and privacy
 
@@ -208,13 +208,17 @@ bun run set:password
 We welcome community contributions, whether you are submitting code or sharing study materials!
 
 ### 1. Contributing Code
+
 Papyrus is open-source. To maintain code quality and maintainability:
-* **Human Oversight Required:** We strictly prohibit unreviewed AI-generated slop. While AI tools can assist your workflow, all pull requests must be thoroughly reviewed, tested, and accompanied by clear, human-written documentation and explanations.
+
+- **Human Oversight Required:** We strictly prohibit unreviewed AI-generated slop. While AI tools can assist your workflow, all pull requests must be thoroughly reviewed, tested, and accompanied by clear, human-written documentation and explanations.
 
 ### 2. Contributing Papers & Materials
+
 To submit papers for the archive, use the in-app **Upload** page. All submissions undergo a manual review process before being published to ensure quality.
 
 When submitting materials, please ensure:
+
 1. **Rights & Permissions:** Only submit materials you have the right to share. Do not upload copyrighted commercial content.
 2. **Accurate Metadata:** Include clear details (Subject, Grade/Class, Board, Exam Year, and Chapter/Topic).
 3. **Format & Integrity:** Upload clean, readable PDFs (Preferably soft copies) that are not password-protected or corrupted.

@@ -3,6 +3,7 @@ type Bucket = { count: number; resetAt: number };
 const buckets = new Map<string, Bucket>();
 
 let lastPruned = Date.now();
+
 function pruneExpired() {
   const now = Date.now();
   if (now - lastPruned < 60000) return;

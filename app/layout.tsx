@@ -1,4 +1,4 @@
-import "./main.css";
+import "./global.css";
 import type { Metadata } from "next";
 import { ToastProvider } from "@/components/toast";
 

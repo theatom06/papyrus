@@ -6,7 +6,9 @@ type LogEntry = Record<string, boolean | number | string | null>;
 let log: (message: string, details?: LogEntry) => void;
 
 if (!process.env.NOLOGS) {
-  console.log("Admin logs are enabled. Logs will be written to the logs/admin directory.");
+  console.log(
+    "Admin logs are enabled. Logs will be written to the logs/admin directory.",
+  );
   const dirPath =
     process.env.ADMIN_LOG_PATH || path.join(process.cwd(), "logs", "admin");
   const logPath = path.join(dirPath, `${Bun.randomUUIDv7()}.log`);
@@ -28,7 +30,9 @@ if (!process.env.NOLOGS) {
 } else {
   console.log("Admin logs are disabled. Logs will be written to the console.");
   log = (message: string, details: LogEntry = {}) => {
-    console.log(`${new Date().toISOString()} [-] ${message} [-] ${JSON.stringify(details)}`);
+    console.log(
+      `${new Date().toISOString()} [-] ${message} [-] ${JSON.stringify(details)}`,
+    );
   };
 }
 

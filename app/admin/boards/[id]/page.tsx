@@ -1,8 +1,5 @@
 "use client";
 
-import "@/app/admin/style.css";
-import "./style.css";
-
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
@@ -25,7 +22,7 @@ import {
   nextTheme,
   type Theme,
 } from "@/util/theme";
-import { Modal } from "@/components/modal";
+import Modal from "@/components/modal";
 import { useToast } from "@/components/toast";
 
 type Subject = {
@@ -397,7 +394,7 @@ export default function AdminBoardDetailPage() {
   if (loading) {
     return (
       <div
-        className="admin-app"
+        className="flex min-h-screen items-center justify-center bg-sand text-ink"
         style={{ minHeight: "100vh", display: "grid", placeItems: "center" }}
       >
         <p style={{ color: "var(--slate)", font: "500 14px var(--mono)" }}>
@@ -410,7 +407,7 @@ export default function AdminBoardDetailPage() {
   if (!board || error) {
     return (
       <div
-        className="admin-app"
+        className="flex min-h-screen items-center justify-center bg-sand text-ink"
         style={{ minHeight: "100vh", display: "grid", placeItems: "center" }}
       >
         <div style={{ textAlign: "center" }}>
@@ -428,10 +425,10 @@ export default function AdminBoardDetailPage() {
   }
 
   return (
-    <div className="admin-app" style={{ display: "block", minHeight: "100vh" }}>
+    <div className="min-h-screen bg-sand text-ink">
       {/* Top Header */}
       <header
-        className="admin-topbar"
+        className="sticky top-0 z-30 flex min-h-16 items-center justify-between border-b border-border-main bg-linen/90 px-5 backdrop-blur-md sm:px-[4.5vw]"
         style={{ position: "sticky", top: 0, zIndex: 30 }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
@@ -450,7 +447,7 @@ export default function AdminBoardDetailPage() {
           </Link>
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <span className="mobile-kicker" style={{ padding: 0 }}>
+              <span className="font-mono text-[9px] uppercase tracking-[0.12em] text-slate">
                 PAPYRUS / ADMIN / BOARDS
               </span>
               <span

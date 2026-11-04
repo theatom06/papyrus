@@ -1,7 +1,10 @@
 import { NextResponse } from "next/server";
 import { allowRequest } from "@/lib/rate-limit";
 import { clientAddress } from "@/lib/request-info";
-import { resolvePaperMetadata, hasValidPaperMetadata } from "@/db/functions/helpers";
+import {
+  resolvePaperMetadata,
+  hasValidPaperMetadata,
+} from "@/db/functions/helpers";
 
 const MAX_UPLOAD_BYTES = 20 * 1024 * 1024; // 20 MB
 const MAX_UPLOAD_BODY_BYTES = 22 * 1024 * 1024; // 22 MB (Generous 2MB overhead)
@@ -136,7 +139,7 @@ export async function cleanForm(form: FormData): Promise<UploadForm> {
   if (
     file.type !== "application/pdf" ||
     !file.name.toLowerCase().endsWith(".pdf") ||
-    !new TextDecoder()        // check the magic bytes
+    !new TextDecoder() // check the magic bytes
       .decode(await file.slice(0, 5).arrayBuffer())
       .startsWith("%PDF-")
   ) {
