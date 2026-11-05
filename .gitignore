@@ -7,4 +7,3 @@ dist
 *.tsbuildinfo
 dataum/
 .env*
-.vercel

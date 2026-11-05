@@ -1,9 +1,5 @@
 "use client";
 
-import "@/app/admin/style.css";
-import "@/app/paper/[id]/style.css";
-import "./style.css";
-
 import { useEffect, useState, useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
@@ -24,9 +20,9 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import { apiRequest } from "@/lib/api-client";
-import { Dropdown } from "@/components/dropdown";
-import { PdfViewer } from "@/components/pdf-viewer";
-import { Modal } from "@/components/modal";
+import Dropdown from "@/components/dropdown";
+import PdfViewer from "@/components/pdf-viewer";
+import Modal from "@/components/modal";
 import { useToast } from "@/components/toast";
 import { formatDate, formatFileSize } from "@/util/format";
 import {
@@ -101,11 +97,9 @@ export default function AdminPaperPage() {
   const [showUnsavedModal, setShowUnsavedModal] = useState(false);
   const [pendingNav, setPendingNav] = useState<string | null>(null);
 
-  // User Reports & Reviews state
   const [reports, setReports] = useState<PaperReport[]>([]);
   const reportsLoading = false;
 
-  // Form states
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [status, setStatus] = useState<PaperDetail["status"]>("review");
@@ -117,7 +111,6 @@ export default function AdminPaperPage() {
   const [duration, setDuration] = useState<number>(60);
   const [downloads, setDownloads] = useState<number>(0);
 
-  // Track saved state for dirty detection
   const [savedTitle, setSavedTitle] = useState("");
   const [savedDescription, setSavedDescription] = useState("");
   const [savedStatus, setSavedStatus] =
@@ -166,7 +159,6 @@ export default function AdminPaperPage() {
           setYear(Number(p.year) || 2026);
           setDuration(Number(p.duration) || 60);
           setDownloads(Number(p.downloads) || 0);
-          // Sync saved state for dirty tracking
           setSavedTitle(p.title);
           setSavedDescription(p.description || "");
           setSavedStatus(p.status);
@@ -234,7 +226,6 @@ export default function AdminPaperPage() {
     }
   }
 
-  // Dependent dropdown lists
   const currentBoard = useMemo(
     () => boards.find((b) => b.id === boardId),
     [boards, boardId],
@@ -325,7 +316,6 @@ export default function AdminPaperPage() {
       if (newStatusOverride) setStatus(newStatusOverride);
       showToast("Paper successfully saved and updated!", "success");
 
-      // Sync saved state so isDirty resets
       setSavedTitle(title.trim());
       setSavedDescription(description.trim());
       setSavedStatus(newStatusOverride || status);
@@ -336,7 +326,6 @@ export default function AdminPaperPage() {
       setSavedYear(year);
       setSavedDuration(duration);
 
-      // Refresh paper state
       const updated = await apiRequest<{ paper?: PaperDetail }>(
         `/api/papers/${id}?scope=admin`,
       );
@@ -361,7 +350,7 @@ export default function AdminPaperPage() {
   if (loading) {
     return (
       <div
-        className="admin-app"
+        className="flex min-h-screen items-center justify-center bg-sand text-ink"
         style={{ minHeight: "100vh", display: "grid", placeItems: "center" }}
       >
         <p style={{ color: "var(--slate)", font: "500 14px var(--mono)" }}>
@@ -374,7 +363,7 @@ export default function AdminPaperPage() {
   if (!paper) {
     return (
       <div
-        className="admin-app"
+        className="flex min-h-screen items-center justify-center bg-sand text-ink"
         style={{ minHeight: "100vh", display: "grid", placeItems: "center" }}
       >
         <div style={{ textAlign: "center" }}>
@@ -395,10 +384,9 @@ export default function AdminPaperPage() {
   const downloadUrl = `/api/papers/${paper.id}/download?scope=admin`;
 
   return (
-    <div className="admin-app" style={{ display: "block", minHeight: "100vh" }}>
-      {/* Top Navigation Bar */}
+    <div className="min-h-screen bg-sand text-ink">
       <header
-        className="admin-topbar"
+        className="sticky top-0 z-30 flex min-h-16 items-center justify-between border-b border-border-main bg-linen/90 px-5 backdrop-blur-md sm:px-[4.5vw]"
         style={{ position: "sticky", top: 0, zIndex: 30 }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
@@ -418,7 +406,7 @@ export default function AdminPaperPage() {
           </Link>
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <span className="mobile-kicker" style={{ padding: 0 }}>
+              <span className="font-mono text-[9px] uppercase tracking-[0.12em] text-slate">
                 PAPYRUS / ADMIN / PAPERS
               </span>
               <span
@@ -483,26 +471,23 @@ export default function AdminPaperPage() {
         </div>
       </header>
 
-      {/* Main Content Area - Wide Layout */}
       <main
-        className="detail-page-container"
+        className="mx-auto max-w-[1400px] px-[4.5vw] pb-[60px] pt-7"
         style={{ padding: "28px 4.5vw 60px", maxWidth: 1400, margin: "0 auto" }}
       >
         <div
-          className="detail-layout"
+          className="grid items-start gap-8 lg:grid-cols-[minmax(0,1.35fr)_minmax(340px,440px)]"
           style={{
             gridTemplateColumns: "minmax(0, 1.35fr) minmax(340px, 440px)",
             gap: 32,
           }}
         >
-          {/* Main Column: PDF Preview + Title & Description Editors */}
           <article
-            className="detail-main"
+            className="flex min-w-0 flex-col gap-6"
             style={{ display: "flex", flexDirection: "column", gap: 24 }}
           >
-            {/* Live PDF Viewer */}
             <div
-              className="detail-viewer-wrapper"
+              className="overflow-hidden rounded-lg border border-border-main bg-linen shadow-sm"
               style={{ boxShadow: "0 6px 24px var(--card-shadow)" }}
             >
               <PdfViewer
@@ -512,7 +497,6 @@ export default function AdminPaperPage() {
               />
             </div>
 
-            {/* Editable Title & Description Card */}
             <section
               style={{
                 background: "var(--linen)",
@@ -607,7 +591,6 @@ export default function AdminPaperPage() {
               </div>
             </section>
 
-            {/* Contributor Submission Details if available */}
             {(paper.contributor_email || paper.contributor_comments) && (
               <section
                 style={{
@@ -687,7 +670,6 @@ export default function AdminPaperPage() {
               </section>
             )}
 
-            {/* Community Rating & User Reports Card */}
             <section
               style={{
                 background: "var(--linen)",
@@ -709,7 +691,7 @@ export default function AdminPaperPage() {
               >
                 <div>
                   <div
-                    className="eyebrow"
+                    className="font-mono text-[9px] uppercase tracking-[0.12em] text-amber"
                     style={{ color: "var(--amber-dark)" }}
                   >
                     COMMUNITY FEEDBACK & AUDIT
@@ -760,7 +742,6 @@ export default function AdminPaperPage() {
                 </div>
               </div>
 
-              {/* Reports list for this paper */}
               <div>
                 <h4
                   style={{
@@ -883,7 +864,11 @@ export default function AdminPaperPage() {
                               : "Anonymous student"}
                           </span>
                           <span>
-                            {new Date(report.created_at).toLocaleDateString()}
+                            {formatDate(report.created_at, {
+                              month: "short",
+                              day: "numeric",
+                              year: "numeric",
+                            })}
                           </span>
                         </div>
                       </div>
@@ -914,12 +899,10 @@ export default function AdminPaperPage() {
             </section>
           </article>
 
-          {/* Sidebar Column: All Metadata Controls */}
           <aside
-            className="detail-sidebar"
+            className="flex flex-col gap-6"
             style={{ display: "flex", flexDirection: "column", gap: 20 }}
           >
-            {/* Status & Quick Actions Card */}
             <div className="sidebar-card">
               <small className="sidebar-label">PUBLICATION STATUS</small>
               <div style={{ display: "grid", gap: 12, marginTop: 10 }}>
@@ -995,7 +978,6 @@ export default function AdminPaperPage() {
               </div>
             </div>
 
-            {/* Taxonomy & Hierarchy Matrix */}
             <div className="sidebar-card">
               <small className="sidebar-label">CURRICULUM & TAXONOMY</small>
               <div style={{ display: "grid", gap: 14, marginTop: 12 }}>
@@ -1032,7 +1014,6 @@ export default function AdminPaperPage() {
               </div>
             </div>
 
-            {/* Exam Parameters Card */}
             <div className="sidebar-card">
               <small className="sidebar-label">EXAM PARAMETERS</small>
               <div style={{ display: "grid", gap: 14, marginTop: 12 }}>
@@ -1151,7 +1132,6 @@ export default function AdminPaperPage() {
               </div>
             </div>
 
-            {/* Storage & Metadata Specs Card */}
             <div className="sidebar-card specs-card">
               <small className="sidebar-label">FILE SYSTEM & AUDIT</small>
               <dl className="specs-list" style={{ marginTop: 12 }}>

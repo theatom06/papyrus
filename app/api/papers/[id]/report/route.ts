@@ -14,7 +14,6 @@ export async function POST(
   const { id } = await context.params;
   const address = clientAddress(request);
 
-  // Rate limit: max 25 reports per 10 minutes per IP
   if (!allowRequest(`paper-report:${address}`, 25, 10 * 60 * 1000)) {
     return NextResponse.json(
       { error: "Too many reports submitted. Please wait a few minutes." },

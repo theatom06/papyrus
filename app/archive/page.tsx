@@ -1,35 +1,35 @@
 "use client";
 
-import "./style.css";
-
 import { Suspense, useEffect, useMemo, useState, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 import { type Resource } from "@/components/resource";
-import { Layout } from "@/components/layout";
-import { EmptyState } from "@/components/empty-state";
-import { ResourceCard } from "@/components/resource-card";
-import { FilterBox } from "@/components/filter-box";
-import { FilterSelect, type FilterOption } from "@/components/filter-select";
-import { PageHeading } from "@/components/page-heading";
-import { SearchBox } from "@/components/search-box";
-import { PageTitle } from "@/components/page-title";
+import Layout from "@/components/layout";
+import EmptyState from "@/components/empty-state";
+import ResourceCard from "@/components/resource-card";
+import FilterBox from "@/components/filter-box";
+import FilterSelect, { type FilterOption } from "@/components/filter-select";
+import PageHeading from "@/components/page-heading";
+import SearchBox from "@/components/search-box";
 import { apiRequest } from "@/lib/api-client";
-import { Dropdown } from "@/components/dropdown";
-import { calculateScore } from "@/util/score";
+import Dropdown from "@/components/dropdown";
+import calculateScore from "@/util/score";
 
 function ArchiveContent() {
   const searchParams = useSearchParams();
 
+  const params = {
+    board: () => searchParams.get("board"),
+    classLevel: () => searchParams.get("classLevel") || "",
+    subject: () => searchParams.get("subject") || "",
+    type: () => searchParams.get("type") || "",
+    year: () => searchParams.get("year") || "",
+  };
+
   const [filter, setFilter] = useState(() => {
-    const urlBoard = searchParams.get("board");
-    const defaultBoard =
-      typeof window !== "undefined"
-        ? localStorage.getItem("papyrus-default-board") || ""
-        : "";
-    const activeBoard = urlBoard !== null ? urlBoard : defaultBoard;
+    const urlBoard = params.board();
     return {
-      board: activeBoard,
-      classLevel: searchParams.get("classLevel") || "",
+      board: urlBoard || "",
+      classLevel: params.classLevel(),
       subject: searchParams.get("subject") || "",
       type: searchParams.get("type") || "",
       year: searchParams.get("year") || "",
@@ -39,14 +39,9 @@ function ArchiveContent() {
   const [draftQuery, setDraftQuery] = useState(searchParams.get("q") || "");
   const [sort, setSort] = useState(searchParams.get("sort") || "Newest first");
   const [filtersOpen, setFiltersOpen] = useState(() => {
-    const urlBoard = searchParams.get("board");
-    const defaultBoard =
-      typeof window !== "undefined"
-        ? localStorage.getItem("papyrus-default-board") || ""
-        : "";
+    const urlBoard = params.board();
     return Boolean(
       urlBoard ||
-      defaultBoard ||
       searchParams.get("classLevel") ||
       searchParams.get("subject") ||
       searchParams.get("type") ||
@@ -59,15 +54,12 @@ function ArchiveContent() {
   const [hasMore, setHasMore] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
 
-  // Sync state when URL search params change
   useEffect(() => {
     const defaultBoard = localStorage.getItem("papyrus-default-board") || "";
-    // If the board parameter is explicitly in searchParams (even empty "?board="), respect it.
-    // Otherwise, if no board parameter at all was passed, default to saved defaultBoard.
     const hasExplicitBoard = searchParams.has("board");
     const b = hasExplicitBoard
-      ? searchParams.get("board") || ""
-      : searchParams.get("board") || defaultBoard;
+      ? params.board() || ""
+      : params.board() || defaultBoard;
     const cl = searchParams.get("classLevel") || "";
     const s = searchParams.get("subject") || "";
     const t = searchParams.get("type") || "";
@@ -90,7 +82,6 @@ function ArchiveContent() {
     }
   }, [searchParams]);
 
-  // Sync state back to URL parameters
   const syncToUrl = useCallback(
     (newFilter: typeof filter, newQuery: string, newSort: string) => {
       if (typeof window === "undefined") return;
@@ -295,21 +286,15 @@ function ArchiveContent() {
 
   return (
     <Layout>
-      <PageTitle title="Archive" />
-      <main>
-        <PageHeading
-          kicker="THE COMMUNITY ARCHIVE / 2026"
-          title={
-            <>
-              Find exactly what
-              <br />
-              <em>you need.</em>
-            </>
-          }
-          description="Search the stack of authentic papers, prelims, and worksheets. Catalogued by students, for students."
-        />
-        <section className="explorer">
-          <div className="archive-top-bar">
+      <main className="min-h-screen">
+        <section className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+          <PageHeading
+            kicker="THE COMMUNITY ARCHIVE / 2026"
+            title="Find exactly what"
+            star="you need."
+            description="Search authentic papers, prelims, and worksheets. Catalogued by students, for students."
+          />
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:gap-3">
             <SearchBox
               value={draftQuery}
               onChange={(val) => {
@@ -325,7 +310,7 @@ function ArchiveContent() {
               boardLabel={filter.board || undefined}
               onBoardClick={() => setFiltersOpen(true)}
             />
-            <div className="archive-sort-wrap">
+            <div className="w-full sm:w-44 shrink-0">
               <Dropdown
                 label="Sort"
                 value={sort}
@@ -341,10 +326,10 @@ function ArchiveContent() {
               />
             </div>
           </div>
-          <div className="search-help">
+          <div className="mt-1.5 flex items-center justify-between gap-4 font-mono text-[11px] text-slate">
             <span>Try “2024 physics” or filter by exam type</span>
-            <span>
-              {loading ? "Loading papers..." : `${list.length} papers found`}
+            <span className="text-right">
+              {loading ? "Loading…" : `${list.length} paper${list.length !== 1 ? "s" : ""} found`}
             </span>
           </div>
           <FilterBox
@@ -388,7 +373,7 @@ function ArchiveContent() {
             />
           </FilterBox>
           {list.length ? (
-            <div className="resource-grid">
+            <div className="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {list.map((resource) => (
                 <ResourceCard key={resource.id} resource={resource} />
               ))}
@@ -397,9 +382,9 @@ function ArchiveContent() {
             <EmptyState onAction={clearAllFilters} />
           )}
           {hasMore && (
-            <div className="fetch-more">
+            <div className="mt-6 flex justify-center">
               <button
-                className="button button-soft"
+                className="inline-flex items-center gap-2 rounded-md border border-border-main bg-linen px-5 py-2.5 text-sm font-semibold text-ink shadow-xs hover:border-amber hover:text-amber transition cursor-pointer disabled:opacity-50"
                 onClick={fetchMore}
                 disabled={loadingMore}
               >
@@ -418,8 +403,7 @@ export default function ArchivePage() {
     <Suspense
       fallback={
         <Layout>
-          <PageTitle title="Archive" />
-          <main style={{ padding: "80px 20px", textAlign: "center" }}>
+          <main className="flex min-h-screen items-center justify-center">
             <p>Loading archive...</p>
           </main>
         </Layout>

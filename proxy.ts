@@ -11,15 +11,13 @@ export async function proxy(request: NextRequest) {
     (request.nextUrl.pathname === "/api/papers/upload" ||
       /^\/api\/papers\/[^/]+\/vote$/.test(request.nextUrl.pathname));
 
-  if (isAPI && (isGETAllowed || isPOSTAllowed))
-    // Public
-    return NextResponse.next();
+  if (isAPI && (isGETAllowed || isPOSTAllowed)) return NextResponse.next();
 
-  if (await verifyAdminToken(request.cookies.get(cookieName)?.value))
-    // Proved Adminship
+  if (await verifyAdminToken(request.cookies.get(cookieName)?.value)) {
     return NextResponse.next();
+  }
 
-  return NextResponse.redirect(new URL("/login", request.url)); // Has to prove Adminship
+  return NextResponse.redirect(new URL("/login", request.url));
 }
 
 export const config = {

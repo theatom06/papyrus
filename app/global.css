@@ -1,0 +1,33 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --sand: #f5f1eb;
+  --linen: #fdfbf7;
+  --border: #e7e0d8;
+  --ink: #29231e;
+  --slate: #746b63;
+  --amber: #c97732;
+  --amber-dark: #a85d20;
+}
+
+.dark {
+  --sand: #000000;
+  --linen: #0b0b0b;
+  --border: #2a2a2a;
+  --ink: #fffaf2;
+  --slate: #b7b0a8;
+  --amber: #ffc06a;
+  --amber-dark: #ffd18d;
+}
+
+@theme {
+  --color-sand: var(--sand);
+  --color-linen: var(--linen);
+  --color-border-main: var(--border);
+  --color-ink: var(--ink);
+  --color-slate: var(--slate);
+  --color-amber: var(--amber);
+  --color-amber-dark: var(--amber-dark);
+}

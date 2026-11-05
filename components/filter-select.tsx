@@ -1,10 +1,10 @@
 "use client";
 
-import { Dropdown } from "./dropdown";
+import Dropdown from "./dropdown";
 
 export type FilterOption = { value: string; count: number };
 
-export function FilterSelect({
+export default function FilterSelect({
   label,
   value,
   options,

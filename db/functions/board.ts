@@ -1,7 +1,5 @@
 import { getDb, slugify } from "../db";
 
-// Board
-
 export async function getBoardOptions() {
   const db = await getDb();
   const boards = db
@@ -69,8 +67,6 @@ export async function updateBoard(id: number, name: string, code: string) {
   );
 }
 
-// Subjects
-
 export async function createSubject(input: {
   classLevelId: number;
   name: string;
@@ -111,8 +107,6 @@ export async function deleteSubject(id: number) {
   db.prepare("DELETE FROM subjects WHERE id = ?").run(id);
 }
 
-// Class Levels
-
 export async function createClassLevel(input: {
   boardId: number;
   name: string;
@@ -148,8 +142,6 @@ export async function deleteClassLevel(id: number) {
   const db = await getDb();
   db.prepare("DELETE FROM class_levels WHERE id = ?").run(id);
 }
-
-// Resource Types
 
 export async function createResourceType(input: {
   boardId: number;

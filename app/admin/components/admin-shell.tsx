@@ -2,18 +2,13 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ExternalLink, Moon, Sun, LogOut, Sparkles } from "lucide-react";
-import { AdminSidebar } from "./admin-sidebar";
-import { Modal } from "@/components/modal";
+import { ExternalLink, Moon, Sun, LogOut } from "lucide-react";
+import AdminSidebar from "./admin-sidebar";
+import Modal from "@/components/modal";
 import { apiRequest } from "@/lib/api-client";
-import {
-  applyTheme,
-  getStoredTheme,
-  nextTheme,
-  type Theme,
-} from "@/util/theme";
+import { applyTheme, nextTheme, type Theme } from "@/util/theme";
 
-export function AdminShell({
+export default function AdminShell({
   title,
   kicker = "PAPYRUS / ADMIN",
   active,
@@ -32,7 +27,7 @@ export function AdminShell({
     poorCount?: number;
   };
 }) {
-  const [theme, setTheme] = useState<Theme>("light");
+  const [theme, setTheme] = useState<Theme>("dark");
   const [showSettings, setShowSettings] = useState(false);
   const [reviewCount, setReviewCount] = useState<number>(
     badges?.reviewCount ?? 0,
@@ -42,14 +37,12 @@ export function AdminShell({
   );
   const [poorCount, setPoorCount] = useState<number>(badges?.poorCount ?? 0);
 
-  // Sync badge counts if passed from parent
   useEffect(() => {
     if (badges?.reviewCount !== undefined) setReviewCount(badges.reviewCount);
     if (badges?.reportCount !== undefined) setReportCount(badges.reportCount);
     if (badges?.poorCount !== undefined) setPoorCount(badges.poorCount);
   }, [badges?.reviewCount, badges?.reportCount, badges?.poorCount]);
 
-  // Load badge counts if not provided
   useEffect(() => {
     if (badges?.reviewCount === undefined) {
       apiRequest<{ papers?: Array<{ status: string }> }>(
@@ -84,9 +77,13 @@ export function AdminShell({
     }
   }, [badges?.reviewCount, badges?.reportCount, badges?.poorCount]);
 
-  // Theme synchronization
   useEffect(() => {
-    const savedTheme = getStoredTheme();
+    const savedTheme =
+      typeof window !== "undefined" &&
+      (localStorage.getItem("papyrus-theme") === "light" ||
+        localStorage.getItem("papyrus-theme") === "dark")
+        ? (localStorage.getItem("papyrus-theme") as Theme)
+        : "dark";
     setTheme(savedTheme);
     applyTheme(savedTheme);
   }, []);
@@ -105,13 +102,14 @@ export function AdminShell({
     try {
       await apiRequest("/api/auth/login", { method: "DELETE" });
     } catch {
-      // ignore
     }
     window.location.assign("/login");
   }
 
   return (
-    <div className="admin-app">
+    <div
+      className={`flex min-h-screen bg-sand text-ink ${theme === "dark" ? "dark" : ""}`}
+    >
       <AdminSidebar
         active={active}
         reviewCount={reviewCount}
@@ -120,42 +118,35 @@ export function AdminShell({
         onSettings={() => setShowSettings(true)}
       />
 
-      <main className="admin-main">
-        <header className="admin-topbar">
+      <main className="flex min-w-0 flex-1 flex-col">
+        <header className="sticky top-0 z-20 flex min-h-[70px] items-center justify-between gap-5 border-b border-border-main bg-linen px-5 sm:px-[4.5vw]">
           <div>
-            <span className="mobile-kicker">{kicker}</span>
-            <h1>{title}</h1>
+            <span className="block font-mono text-[9px] uppercase tracking-[0.12em] text-slate">
+              {kicker}
+            </span>
+            <h1 className="mt-1 font-[Georgia] text-2xl">{title}</h1>
           </div>
-          <div className="top-actions">
+          <div className="flex items-center gap-3">
             {actions}
             <Link
               href="/"
               target="_blank"
-              className="button button-secondary"
-              style={{ fontSize: 12, padding: "8px 14px" }}
+              className="inline-flex items-center gap-2 rounded-md border border-border-main px-3.5 py-2 text-xs text-ink transition hover:border-amber hover:text-amber"
             >
               <ExternalLink size={13} /> View Archive
             </Link>
             <button
               type="button"
-              className="icon-button"
+              className="grid size-8 place-items-center rounded-md border border-border-main text-slate transition hover:border-amber hover:text-amber"
               onClick={toggleDark}
               aria-label="Toggle theme mode"
               title={
                 theme === "light"
                   ? "Switch to dark mode"
-                  : theme === "dark"
-                    ? "Switch to true-black mode"
-                    : "Switch to light mode"
+                  : "Switch to light mode"
               }
             >
-              {theme === "light" ? (
-                <Moon size={16} />
-              ) : theme === "dark" ? (
-                <Sun size={16} />
-              ) : (
-                <Sparkles size={16} />
-              )}
+              {theme === "light" ? <Moon size={16} /> : <Sun size={16} />}
             </button>
           </div>
         </header>
@@ -170,48 +161,42 @@ export function AdminShell({
           eyebrow="PAPYRUS / ADMIN"
           onClose={() => setShowSettings(false)}
         >
-          <div className="admin-quick-settings">
-            <div className="setting-row">
+          <div className="grid gap-5">
+            <div className="flex items-center justify-between gap-5 border-b border-border-main pb-5">
               <div>
-                <strong>Interface Theme</strong>
-                <p>
+                <strong className="block text-sm">Interface Theme</strong>
+                <p className="mt-1 text-xs text-slate">
                   Select your visual presentation style for the admin studio.
                 </p>
               </div>
-              <div className="theme-toggle-group">
+              <div className="flex gap-2">
                 <button
                   type="button"
-                  className={`theme-option-btn ${theme === "light" ? "active" : ""}`}
+                  className={`inline-flex items-center gap-1.5 rounded-md border px-3 py-2 text-xs ${theme === "light" ? "border-amber text-amber" : "border-border-main text-slate"}`}
                   onClick={() => handleThemeChange("light")}
                 >
                   <Sun size={14} /> Light
                 </button>
                 <button
                   type="button"
-                  className={`theme-option-btn ${theme === "dark" ? "active" : ""}`}
+                  className={`inline-flex items-center gap-1.5 rounded-md border px-3 py-2 text-xs ${theme === "dark" ? "border-amber text-amber" : "border-border-main text-slate"}`}
                   onClick={() => handleThemeChange("dark")}
                 >
                   <Moon size={14} /> Dark
                 </button>
-                <button
-                  type="button"
-                  className={`theme-option-btn ${theme === "true-black" ? "active" : ""}`}
-                  onClick={() => handleThemeChange("true-black")}
-                >
-                  True Black
-                </button>
               </div>
             </div>
 
-            <div className="setting-row">
+            <div className="flex items-center justify-between gap-5">
               <div>
-                <strong>Account Session</strong>
-                <p>Currently logged in as Administrator (Steve).</p>
+                <strong className="block text-sm">Account Session</strong>
+                <p className="mt-1 text-xs text-slate">
+                  Currently logged in as Administrator (Steve).
+                </p>
               </div>
               <button
                 type="button"
-                className="button button-danger"
-                style={{ fontSize: 12, padding: "8px 14px" }}
+                className="inline-flex items-center gap-2 rounded-md border border-rose-600/30 px-3.5 py-2 text-xs text-rose-600 transition hover:bg-rose-500/10 dark:text-rose-400"
                 onClick={logout}
               >
                 <LogOut size={14} /> Log out

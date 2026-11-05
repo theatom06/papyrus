@@ -1,12 +1,9 @@
 "use client";
 
-import "@/app/admin/style.css";
-import "./style.css";
-
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Flag, Settings2, ThumbsDown, ThumbsUp } from "lucide-react";
-import { AdminShell } from "../components/admin-shell";
+import AdminShell from "../components/admin-shell";
 import { apiRequest } from "@/lib/api-client";
 import { useToast } from "@/components/toast";
 
@@ -39,10 +36,10 @@ export default function AdminPoorPerformingPage() {
       <div className="dashboard-content">
         <div className="view-heading">
           <div>
-            <div className="eyebrow">QUALITY AUDIT</div>
+            <div className="font-mono text-[9px] uppercase tracking-[0.12em] text-amber">QUALITY AUDIT</div>
             <h2>
               Poor Performing Papers{" "}
-              <span className="count-pill">{papers.length}</span>
+              <span className="ml-1 inline-flex rounded-full border border-amber/40 bg-amber/10 px-2 py-0.5 align-middle font-mono text-[10px] text-amber">{papers.length}</span>
             </h2>
             <p>
               Papers with low community ratings, high downvotes, or open user
@@ -59,7 +56,7 @@ export default function AdminPoorPerformingPage() {
             Analyzing quality and rating metrics…
           </p>
         ) : papers.length ? (
-          <div className="poor-grid">
+          <div className="grid gap-4 md:grid-cols-2">
             {papers.map((p) => {
               const up = Number(p.upvotes) || 0;
               const down = Number(p.downvotes) || 0;
@@ -68,7 +65,7 @@ export default function AdminPoorPerformingPage() {
               const reports = Number(p.pending_reports) || 0;
 
               return (
-                <div className="poor-card" key={String(p.id)}>
+                <div className="rounded-lg border border-border-main bg-linen p-5 shadow-sm" key={String(p.id)}>
                   <div
                     style={{
                       display: "flex",
@@ -82,7 +79,7 @@ export default function AdminPoorPerformingPage() {
                       {String(p.status).replace("_", " ")}
                     </span>
                     {reports > 0 && (
-                      <span className="report-badge pending">
+                      <span className="inline-flex items-center gap-1 rounded-full border border-rose-500/30 bg-rose-500/10 px-2 py-1 text-[10px] text-rose-600 dark:text-rose-400">
                         <Flag size={11} /> {reports}{" "}
                         {reports === 1 ? "report" : "reports"}
                       </span>

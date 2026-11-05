@@ -1,8 +1,5 @@
 "use client";
 
-import "@/app/admin/style.css";
-import "./style.css";
-
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
@@ -25,7 +22,7 @@ import {
   nextTheme,
   type Theme,
 } from "@/util/theme";
-import { Modal } from "@/components/modal";
+import Modal from "@/components/modal";
 import { useToast } from "@/components/toast";
 
 type Subject = {
@@ -83,12 +80,10 @@ export default function AdminBoardDetailPage() {
   const [theme, setTheme] = useState<Theme>("light");
   const [showUnsavedModal, setShowUnsavedModal] = useState(false);
 
-  // Board details edit state
   const [editingBoard, setEditingBoard] = useState(false);
   const [boardName, setBoardName] = useState("");
   const [boardCode, setBoardCode] = useState("");
 
-  // Class level states
   const [addingClassLevel, setAddingClassLevel] = useState(false);
   const [newClassLevelName, setNewClassLevelName] = useState("");
   const [editingClassLevelId, setEditingClassLevelId] = useState<number | null>(
@@ -96,7 +91,6 @@ export default function AdminBoardDetailPage() {
   );
   const [editClassLevelName, setEditClassLevelName] = useState("");
 
-  // Subject states
   const [addingSubjectForLevel, setAddingSubjectForLevel] = useState<
     number | null
   >(null);
@@ -107,7 +101,6 @@ export default function AdminBoardDetailPage() {
   const [editSubjectName, setEditSubjectName] = useState("");
   const [editSubjectAccent, setEditSubjectAccent] = useState("#c97732");
 
-  // Resource type states
   const [addingType, setAddingType] = useState(false);
   const [newTypeName, setNewTypeName] = useState("");
   const [editingTypeId, setEditingTypeId] = useState<number | null>(null);
@@ -191,7 +184,6 @@ export default function AdminBoardDetailPage() {
     showToast(message, type);
   }
 
-  // --- Board Details Actions ---
   async function saveBoardDetails() {
     const name = boardName.trim();
     const code = boardCode.trim().toUpperCase();
@@ -216,7 +208,6 @@ export default function AdminBoardDetailPage() {
     }
   }
 
-  // --- Class Level Actions ---
   async function addClassLevel() {
     const name = newClassLevelName.trim();
     if (!name) return;
@@ -277,7 +268,6 @@ export default function AdminBoardDetailPage() {
     }
   }
 
-  // --- Subject Actions ---
   async function addSubject(levelId: number) {
     const name = newSubjectName.trim();
     if (!name) return;
@@ -336,7 +326,6 @@ export default function AdminBoardDetailPage() {
     }
   }
 
-  // --- Resource Type Actions ---
   async function addResourceType() {
     const name = newTypeName.trim();
     if (!name) return;
@@ -397,7 +386,7 @@ export default function AdminBoardDetailPage() {
   if (loading) {
     return (
       <div
-        className="admin-app"
+        className="flex min-h-screen items-center justify-center bg-sand text-ink"
         style={{ minHeight: "100vh", display: "grid", placeItems: "center" }}
       >
         <p style={{ color: "var(--slate)", font: "500 14px var(--mono)" }}>
@@ -410,7 +399,7 @@ export default function AdminBoardDetailPage() {
   if (!board || error) {
     return (
       <div
-        className="admin-app"
+        className="flex min-h-screen items-center justify-center bg-sand text-ink"
         style={{ minHeight: "100vh", display: "grid", placeItems: "center" }}
       >
         <div style={{ textAlign: "center" }}>
@@ -428,10 +417,9 @@ export default function AdminBoardDetailPage() {
   }
 
   return (
-    <div className="admin-app" style={{ display: "block", minHeight: "100vh" }}>
-      {/* Top Header */}
+    <div className="min-h-screen bg-sand text-ink">
       <header
-        className="admin-topbar"
+        className="sticky top-0 z-30 flex min-h-16 items-center justify-between border-b border-border-main bg-linen/90 px-5 backdrop-blur-md sm:px-[4.5vw]"
         style={{ position: "sticky", top: 0, zIndex: 30 }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
@@ -450,7 +438,7 @@ export default function AdminBoardDetailPage() {
           </Link>
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <span className="mobile-kicker" style={{ padding: 0 }}>
+              <span className="font-mono text-[9px] uppercase tracking-[0.12em] text-slate">
                 PAPYRUS / ADMIN / BOARDS
               </span>
               <span
@@ -494,11 +482,9 @@ export default function AdminBoardDetailPage() {
         </div>
       </header>
 
-      {/* Main Container */}
       <main
         style={{ padding: "32px 4.5vw 80px", maxWidth: 1300, margin: "0 auto" }}
       >
-        {/* Board Overview Card */}
         <section
           style={{
             background: "var(--linen)",
@@ -632,7 +618,6 @@ export default function AdminBoardDetailPage() {
           </div>
         </section>
 
-        {/* Two-Column Grid: Left = Class Levels & Subjects, Right = Resource Types */}
         <div
           style={{
             display: "grid",
@@ -640,7 +625,6 @@ export default function AdminBoardDetailPage() {
             gap: 32,
           }}
         >
-          {/* Left Column: Grade Levels & Subjects */}
           <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
             <div
               style={{
@@ -675,7 +659,6 @@ export default function AdminBoardDetailPage() {
               )}
             </div>
 
-            {/* Add Class Level Card */}
             {addingClassLevel && (
               <div
                 style={{
@@ -734,7 +717,6 @@ export default function AdminBoardDetailPage() {
               </div>
             )}
 
-            {/* Class Levels List */}
             {board.classLevels.length === 0 ? (
               <div
                 style={{
@@ -769,7 +751,6 @@ export default function AdminBoardDetailPage() {
                       boxShadow: "0 2px 12px var(--card-shadow)",
                     }}
                   >
-                    {/* Level Header */}
                     <div
                       style={{
                         display: "flex",
@@ -891,7 +872,6 @@ export default function AdminBoardDetailPage() {
                       )}
                     </div>
 
-                    {/* Subjects Grid */}
                     <div style={{ display: "grid", gap: 10 }}>
                       {levelSubjects.length === 0 ? (
                         <p
@@ -987,7 +967,6 @@ export default function AdminBoardDetailPage() {
                                   </div>
                                 </div>
 
-                                {/* Color Swatches */}
                                 <div>
                                   <small
                                     style={{
@@ -1159,7 +1138,6 @@ export default function AdminBoardDetailPage() {
                         })
                       )}
 
-                      {/* Add Subject Section */}
                       {isAddingSubject ? (
                         <div
                           style={{
@@ -1227,7 +1205,6 @@ export default function AdminBoardDetailPage() {
                             </label>
                           </div>
 
-                          {/* Quick Swatches */}
                           <div
                             style={{
                               display: "flex",
@@ -1316,7 +1293,6 @@ export default function AdminBoardDetailPage() {
             )}
           </div>
 
-          {/* Right Column: Resource Types */}
           <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
             <div
               style={{
@@ -1351,7 +1327,6 @@ export default function AdminBoardDetailPage() {
               )}
             </div>
 
-            {/* Add Resource Type */}
             {addingType && (
               <div
                 style={{
@@ -1412,7 +1387,6 @@ export default function AdminBoardDetailPage() {
               </div>
             )}
 
-            {/* Resource Types Card */}
             <div
               style={{
                 background: "var(--linen)",
@@ -1546,7 +1520,6 @@ export default function AdminBoardDetailPage() {
               </div>
             </div>
 
-            {/* Quick Helper Card */}
             <div
               style={{
                 background: "color-mix(in srgb, var(--amber) 8%, var(--linen))",

@@ -1,13 +1,10 @@
 "use client";
 
-import "@/app/admin/style.css";
-import "./style.css";
-
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowRight, Plus } from "lucide-react";
-import { AdminShell } from "../components/admin-shell";
-import { Modal } from "@/components/modal";
+import AdminShell from "../components/admin-shell";
+import Modal from "@/components/modal";
 import { apiRequest } from "@/lib/api-client";
 import { useToast } from "@/components/toast";
 import type { BoardOption } from "../components/types";
@@ -68,7 +65,7 @@ export default function AdminBoardsPage() {
       actions={
         <button
           type="button"
-          className="button button-primary"
+          className="button-primary"
           onClick={() => setShowBoardForm(true)}
           style={{ fontSize: 12, padding: "8px 14px" }}
         >
@@ -76,19 +73,23 @@ export default function AdminBoardsPage() {
         </button>
       }
     >
-      <div className="dashboard-content">
-        <div className="view-heading">
+      <div className="mx-auto w-full max-w-260 px-5 pb-24 pt-8 sm:px-[4.5vw]">
+        <div className="mb-7 flex items-end justify-between gap-5 max-[720px]:flex-col max-[720px]:items-stretch">
           <div>
-            <div className="eyebrow">ARCHIVE HIERARCHY</div>
-            <h2>Curriculum Boards & Classes</h2>
-            <p>
+            <div className="font-mono text-[9px] uppercase tracking-[0.12em] text-amber">
+              ARCHIVE HIERARCHY
+            </div>
+            <h2 className="mt-2 font-[Georgia] text-[29px] tracking-[-0.035em]">
+              Curriculum Boards & Classes
+            </h2>
+            <p className="mt-2 max-w-xl text-sm leading-6 text-slate">
               Control examination boards, grade levels, subjects, subject
               accents, and resource types.
             </p>
           </div>
           <button
             type="button"
-            className="button button-primary"
+            className="button-primary"
             onClick={() => setShowBoardForm(true)}
           >
             <Plus size={15} /> New Board
@@ -96,32 +97,31 @@ export default function AdminBoardsPage() {
         </div>
 
         {loading ? (
-          <p
-            className="panel-empty"
-            style={{ padding: 48, textAlign: "center", color: "var(--slate)" }}
-          >
+          <p className="p-12 text-center text-sm text-slate">
             Loading examination boards…
           </p>
         ) : (
-          <div className="board-grid">
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {boards.map((board) => (
               <div
-                className="board-card"
+                className="flex cursor-pointer items-center gap-4 rounded-md border border-border-main bg-linen p-5 transition hover:border-amber"
                 key={board.id}
                 style={{ cursor: "pointer" }}
                 onClick={() => router.push(`/admin/boards/${board.id}`)}
               >
-                <div className="board-mark">{board.code}</div>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <h3>{board.name}</h3>
-                  <p>
+                <div className="grid size-12 shrink-0 place-items-center rounded-md bg-amber/10 font-mono text-xs font-bold text-amber">
+                  {board.code}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <h3 className="font-[Georgia] text-base">{board.name}</h3>
+                  <p className="mt-1 text-xs leading-5 text-slate">
                     {board.class_count} grade levels · {board.paper_count}{" "}
                     papers
                   </p>
                 </div>
                 <button
                   type="button"
-                  className="icon-button"
+                  className="grid size-8 place-items-center rounded-md border border-border-main text-slate hover:border-amber hover:text-amber"
                   onClick={(e) => {
                     e.stopPropagation();
                     router.push(`/admin/boards/${board.id}`);
@@ -144,42 +144,56 @@ export default function AdminBoardsPage() {
           eyebrow="PAPYRUS / ADMIN"
           onClose={() => setShowBoardForm(false)}
         >
-          <form className="admin-form" onSubmit={handleCreateBoard}>
-            <label>
+          <form
+            className="grid gap-4 rounded-md border border-border-main bg-linen p-5"
+            onSubmit={handleCreateBoard}
+          >
+            <label className="text-xs font-medium">
               Board name
               <input
+                className="mt-2 w-full rounded-md border border-border-main bg-sand px-3 py-2.5 text-sm text-ink outline-none focus:border-amber"
                 name="name"
                 placeholder="e.g. Cambridge Assessment International Education"
                 required
               />
             </label>
-            <label>
+            <label className="text-xs font-medium">
               Short code
-              <input name="code" placeholder="e.g. CAIE" required />
+              <input
+                className="mt-2 w-full rounded-md border border-border-main bg-sand px-3 py-2.5 text-sm text-ink outline-none focus:border-amber"
+                name="code"
+                placeholder="e.g. CAIE"
+                required
+              />
             </label>
-            <label>
+            <label className="text-xs font-medium">
               Initial class level
               <input
+                className="mt-2 w-full rounded-md border border-border-main bg-sand px-3 py-2.5 text-sm text-ink outline-none focus:border-amber"
                 name="className"
                 placeholder="e.g. IGCSE, O-Level, A-Level"
               />
             </label>
-            <label>
+            <label className="text-xs font-medium">
               Initial subject
               <input
+                className="mt-2 w-full rounded-md border border-border-main bg-sand px-3 py-2.5 text-sm text-ink outline-none focus:border-amber"
                 name="subjectName"
                 placeholder="e.g. Mathematics, Physics"
               />
             </label>
-            <div className="form-actions">
+            <div className="flex justify-end gap-2">
               <button
                 type="button"
-                className="button button-secondary"
+                className="rounded-md border border-border-main px-3.5 py-2 text-xs text-ink hover:border-amber"
                 onClick={() => setShowBoardForm(false)}
               >
                 Cancel
               </button>
-              <button type="submit" className="button button-primary">
+              <button
+                type="submit"
+                className="button-primary"
+              >
                 Create Board
               </button>
             </div>

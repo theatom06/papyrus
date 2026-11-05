@@ -1,12 +1,9 @@
 "use client";
 
-import "@/app/admin/style.css";
-import "./style.css";
-
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { BookOpen, Check, Settings2, ShieldCheck } from "lucide-react";
-import { AdminShell } from "../components/admin-shell";
+import AdminShell from "../components/admin-shell";
 import { apiRequest } from "@/lib/api-client";
 import { useToast } from "@/components/toast";
 import type { Paper } from "../components/types";
@@ -79,9 +76,9 @@ export default function AdminReviewPage() {
       <div className="dashboard-content">
         <div className="view-heading">
           <div>
-            <div className="eyebrow">MODERATION WORKFLOW</div>
-            <h2>
-              Review Queue <span className="count-pill">{papers.length}</span>
+            <div className="font-mono text-[9px] uppercase tracking-[0.12em] text-amber">MODERATION WORKFLOW</div>
+            <h2 className="mt-2 font-serif text-[29px] tracking-[-0.035em]">
+              Review Queue <span className="ml-1 inline-flex rounded-full border border-amber/40 bg-amber/10 px-2 py-0.5 align-middle font-mono text-[10px] text-amber">{papers.length}</span>
             </h2>
             <p>
               Inspect metadata, verify documents, and approve submissions before
@@ -98,19 +95,19 @@ export default function AdminReviewPage() {
             Loading moderation queue…
           </p>
         ) : (
-          <div className="review-grid">
+          <div className="grid gap-4 md:grid-cols-2">
             {papers.length ? (
               papers.map((paper) => (
-                <div className="review-card" key={paper.id}>
+                <div className="overflow-hidden rounded-lg border border-border-main bg-linen shadow-sm" key={paper.id}>
                   <div
-                    className="review-cover"
+                    className="flex min-h-32 cursor-pointer flex-col items-center justify-center gap-2 bg-sand text-slate"
                     style={{ cursor: "pointer" }}
                     onClick={() => router.push(`/admin/papers/${paper.id}`)}
                   >
                     <BookOpen size={28} />
                     <span>PDF PREVIEW</span>
                   </div>
-                  <div className="review-card-content">
+                  <div className="grid gap-3 p-4">
                     <span className="status review">
                       {paper.status.replace("_", " ")}
                     </span>
@@ -139,7 +136,7 @@ export default function AdminReviewPage() {
                         Submitted by: {paper.contributorEmail}
                       </p>
                     )}
-                    <div className="review-card-actions">
+                    <div className="flex flex-wrap gap-2">
                       <button
                         type="button"
                         className="button button-secondary"

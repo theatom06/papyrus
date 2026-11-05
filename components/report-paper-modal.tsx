@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Flag, X, AlertTriangle, CheckCircle2 } from "lucide-react";
-import { Modal } from "./modal";
+import { Flag, CheckCircle2 } from "lucide-react";
+import Modal from "./modal";
 import { apiRequest } from "@/lib/api-client";
 import { useToast } from "./toast";
 
@@ -22,14 +22,12 @@ const REPORT_REASONS: {
   {
     value: "incorrect_content",
     label: "Incorrect content",
-    description:
-      "The paper content doesn't match the listed subject or curriculum",
+    description: "The paper content doesn't match the listed subject or curriculum",
   },
   {
     value: "wrong_year",
     label: "Wrong exam year",
-    description:
-      "The listed year doesn't match the actual exam year on the paper",
+    description: "The listed year doesn't match the actual exam year on the paper",
   },
   {
     value: "poor_scan",
@@ -79,8 +77,7 @@ export function ReportPaperModal({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          reason:
-            REPORT_REASONS.find((r) => r.value === selected)?.label || selected,
+          reason: REPORT_REASONS.find((r) => r.value === selected)?.label || selected,
           details: details.trim() || null,
           reporterEmail: email.trim() || null,
         }),
@@ -101,21 +98,18 @@ export function ReportPaperModal({
 
   if (submitted) {
     return (
-      <Modal title="Report submitted" eyebrow="PAPYRUS" onClose={onClose}>
-        <div className="success">
-          <div>
-            <CheckCircle2 size={40} color="#2f7c57" />
+      <Modal title="Report submitted" eyebrow="REPORT COMPLETED" onClose={onClose}>
+        <div className="flex flex-col items-center py-6 text-center">
+          <div className="grid size-12 place-items-center rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400">
+            <CheckCircle2 size={32} />
           </div>
-          <h2>Thank you for reporting</h2>
-          <p>
-            Our moderation team will review your report and take action if
-            needed. Your contribution helps keep the archive accurate and high
-            quality.
+          <h2 className="mt-4 font-serif text-lg font-bold text-ink">Thank you for reporting</h2>
+          <p className="mt-2 max-w-sm text-xs leading-relaxed text-slate">
+            Our moderation team will review this report. Your help keeps the archive accurate and high quality.
           </p>
           <button
-            className="button button-dark"
+            className="mt-6 w-full rounded-md bg-ink px-4 py-2.5 text-xs font-semibold text-sand hover:opacity-90 cursor-pointer shadow-xs"
             onClick={onClose}
-            style={{ marginTop: 18, width: "100%" }}
           >
             Close
           </button>
@@ -127,27 +121,24 @@ export function ReportPaperModal({
   return (
     <Modal
       title="Report a problem"
-      eyebrow="PAPYRUS"
+      eyebrow="FLAG ISSUE"
       onClose={onClose}
       variant="form"
     >
-      <p
-        style={{
-          marginBottom: 16,
-          fontSize: 12,
-          color: "var(--slate)",
-          lineHeight: 1.55,
-        }}
-      >
-        Reporting: <strong style={{ color: "var(--ink)" }}>{paperTitle}</strong>
+      <p className="mb-4 text-xs text-slate">
+        Reporting: <strong className="text-ink font-semibold">{paperTitle}</strong>
       </p>
 
-      <form onSubmit={handleSubmit}>
-        <div className="report-reason-list">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <div className="flex flex-col gap-2">
           {REPORT_REASONS.map((reason) => (
             <label
               key={reason.value}
-              className={`report-reason-option${selected === reason.value ? " selected" : ""}`}
+              className={`flex items-start gap-3 rounded-lg border p-3 text-xs cursor-pointer transition ${
+                selected === reason.value
+                  ? "border-amber bg-amber/10 text-ink shadow-2xs"
+                  : "border-border-main bg-sand/30 text-slate hover:border-amber/50 hover:bg-sand/60"
+              }`}
             >
               <input
                 type="radio"
@@ -155,120 +146,59 @@ export function ReportPaperModal({
                 value={reason.value}
                 checked={selected === reason.value}
                 onChange={() => setSelected(reason.value)}
+                className="mt-0.5 accent-amber shrink-0 cursor-pointer"
               />
-              <div className="reason-content">
-                <strong>{reason.label}</strong>
-                <span>{reason.description}</span>
+              <div className="flex flex-col gap-0.5">
+                <strong className="text-ink font-semibold">{reason.label}</strong>
+                <span className="text-[11px] leading-relaxed text-slate">{reason.description}</span>
               </div>
             </label>
           ))}
         </div>
 
-        {selected === "other" && (
-          <div style={{ marginTop: 16 }}>
-            <label
-              style={{
-                display: "block",
-                fontSize: 11,
-                color: "var(--slate)",
-                marginBottom: 6,
-                fontWeight: 500,
-              }}
-            >
-              Please describe the issue *
+        {selected && (
+          <div>
+            <label className="block text-xs font-semibold text-slate">
+              {selected === "other" ? "Please describe the issue *" : "Additional details (optional)"}
+              <textarea
+                value={details}
+                onChange={(e) => setDetails(e.target.value)}
+                placeholder="What seems to be wrong with this paper?"
+                required={selected === "other"}
+                rows={3}
+                className="mt-1 block w-full rounded-md border border-border-main bg-sand p-2.5 text-xs text-ink outline-none focus:border-amber focus:ring-1 focus:ring-amber"
+              />
             </label>
-            <textarea
-              value={details}
-              onChange={(e) => setDetails(e.target.value)}
-              placeholder="Describe what's wrong with this paper..."
-              required={selected === "other"}
-              style={{
-                width: "100%",
-                minHeight: 100,
-                padding: "10px 12px",
-                border: "1px solid var(--border)",
-                borderRadius: 8,
-                background: "var(--sand)",
-                color: "var(--ink)",
-                font: "13px var(--sans)",
-                lineHeight: 1.55,
-                resize: "vertical",
-                outline: 0,
-              }}
-            />
           </div>
         )}
 
-        {selected && selected !== "other" && (
-          <div style={{ marginTop: 12 }}>
-            <label
-              style={{
-                display: "block",
-                fontSize: 11,
-                color: "var(--slate)",
-                marginBottom: 6,
-                fontWeight: 500,
-              }}
-            >
-              Additional details (optional)
-            </label>
-            <textarea
-              value={details}
-              onChange={(e) => setDetails(e.target.value)}
-              placeholder="Any extra context that might help..."
-              style={{
-                width: "100%",
-                minHeight: 72,
-                padding: "10px 12px",
-                border: "1px solid var(--border)",
-                borderRadius: 8,
-                background: "var(--sand)",
-                color: "var(--ink)",
-                font: "13px var(--sans)",
-                lineHeight: 1.55,
-                resize: "vertical",
-                outline: 0,
-              }}
+        <div>
+          <label className="block text-xs font-semibold text-slate">
+            Your email (optional — for status updates)
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="student@example.com"
+              className="mt-1 block w-full rounded-md border border-border-main bg-sand px-3 py-2 text-xs text-ink outline-none focus:border-amber focus:ring-1 focus:ring-amber"
             />
-          </div>
-        )}
-
-        <div style={{ marginTop: 12 }}>
-          <label
-            style={{
-              display: "block",
-              fontSize: 11,
-              color: "var(--slate)",
-              marginBottom: 6,
-              fontWeight: 500,
-            }}
-          >
-            Your email (optional — for follow-up)
           </label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="your@email.com"
-            style={{ margin: 0 }}
-          />
         </div>
 
-        <div className="modal-actions" style={{ marginTop: 20 }}>
+        <div className="flex items-center justify-end gap-2 border-t border-border-main/70 pt-3">
           <button
             type="button"
-            className="button button-ghost"
+            className="rounded-md border border-border-main px-4 py-2 text-xs font-medium text-slate hover:text-ink cursor-pointer"
             onClick={onClose}
           >
             Cancel
           </button>
           <button
             type="submit"
-            className="button button-primary"
             disabled={!selected || submitting}
-            style={{ gap: 8 }}
+            className="inline-flex items-center gap-1.5 rounded-md bg-amber px-4 py-2 text-xs font-semibold text-white shadow-xs hover:bg-amber-dark transition disabled:opacity-50 cursor-pointer"
           >
-            <Flag size={14} />
+            <Flag size={13} />
             {submitting ? "Submitting..." : "Submit report"}
           </button>
         </div>
@@ -276,3 +206,5 @@ export function ReportPaperModal({
     </Modal>
   );
 }
+
+export default ReportPaperModal;

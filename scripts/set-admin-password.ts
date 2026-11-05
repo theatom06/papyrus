@@ -3,10 +3,9 @@ const password = prompt("Admin password:")?.trim();
 
 if (!password) throw new Error("A non-empty password is required.");
 
-// Hash the password using bcrypt with a cost factor of 12
 const hash = await bcrypt.hash(password, 12);
 
-const envPath = ".env.local"; //Safer that messing with .env
+const envPath = ".env.local";
 const existing = (await Bun.file(envPath).exists())
   ? await Bun.file(envPath).text()
   : "";
@@ -14,7 +13,6 @@ const existing = (await Bun.file(envPath).exists())
 const hashbytes = new TextEncoder().encode(hash);
 const hashToStore = hashbytes.toBase64();
 
-// Update or append the ADMIN_PASSWORD_HASH in .env.local
 const next = existing.match(/^ADMIN_PASSWORD_HASH=.*$/m)
   ? existing.replace(
       /^ADMIN_PASSWORD_HASH=.*$/m,

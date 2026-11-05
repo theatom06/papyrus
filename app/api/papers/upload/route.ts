@@ -2,9 +2,12 @@ import { NextResponse } from "next/server";
 import log from "@/lib/server-logger";
 import { createPaper, deletePaper, isPaperStatus } from "@/db/functions/paper";
 import { createContributorSubmission } from "@/db/functions/submission";
-import { validateRequest, cleanForm, type UploadForm } from "./upload-validation";
+import {
+  validateRequest,
+  cleanForm,
+  type UploadForm,
+} from "./upload-validation";
 import { uploadFile, type UploadDetails, deleteFile } from "@/db/hc-cdn";
-
 
 export async function POST(request: Request) {
   const validationResponse = await validateRequest(request);
